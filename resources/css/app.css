@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap");
+
+[x-cloak] {
+    display: none;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+
+    font-family:
+        Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Header */
+.header-container {
+    border: 1px solid red;
+    width: 100%;
+    height: 120px;
+}
+
+/* Button */
+@layer components {
+    .title {
+        font-family: "Shadows Into Light", cursive;
+        @apply text-6xl text-center;
+    }
+
+    .btn-base {
+        @apply inline-flex items-center justify-center relative 
+           px-6 py-2 text-base font-medium transition-all duration-300 
+           rounded-lg hover:-translate-y-1 
+           !bg-transparent !border-none !shadow-none !ring-0 !outline-none 
+           !normal-case !tracking-normal
+           mt-2;
+    }
+
+    .btn-black {
+        @apply !text-black;
+    }
+
+    .btn-base:hover .btn-underline {
+        @apply w-3/4;
+    }
+
+    .btn-underline {
+        @apply absolute bottom-1 left-1/2 w-0 h-[1px] -translate-x-1/2 transition-all duration-300 ease-out bg-current;
+    }
+
+    .btn-text {
+        @apply text-xl;
+    }
+}
+
+/* Product */
+.product-container {
+    border: 1px solid blue;
+    margin: 15px 150px;
+}

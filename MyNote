@@ -1,0 +1,92 @@
+Cấu trúc thư mục:
+ - App: Chứa những phần chính của Web
+    + Http: Controller
+    + Model
+    + Provider: Nạp cấu hình
+    + MiddleWare:
+ - Bootstrap: Dùng để khởi động ứng dụng, load các cài đặt mặc định
+    + Cache:
+ - Config: Chứa cấu hình hệ thống, mỗi thứ có một file riêng để cấu hình, phân tách riêng biệt
+ - DataBase: Chứa các file liên quan đến database
+    + Factories: Dùng để tạo dữ liệu nhằm test dự án
+    + Migrations: Dùng để tạo và quản lý cấu trúc database, liên quan đến bảng.
+    + Seeders: Dùng tạo dữ liệu mẫu
+ - Public: WebRoot - file truy cập từ trình duyệt
+ - Resources: Chứa các file liên quan giao diện, asset
+    + CSS
+    + JS
+    + Images
+    + Views: Blade
+    +...
+ - Routes: Định tuyến được URL
+    + web.php: route cho Web
+    + console.php: lệnh artisan tùy chỉnh
+    + api.php: route api
+    + ...
+ - storage: Chứa các file được tạo ra trong quá trình ứng dụng hoạt động
+    + app: Chứa các file được tạo ra trong quá trình ứng dụng hoạt động
+    + framework: Chứa các file được tạo ra trong quá trình ứng dụng hoạt động
+    + logs: Chứa các file log của ứng dụng
+    + views: Chứa các file view của ứng dụng
+    + ...
+ - Vendor: Chứa các thư viện của ứng dụng
+ - .env: File cấu hình môi trường, cấu hình DB, Thông tin liên quan tới Web, Email,...
+ - artisan: File chứa các lệnh artisan
+ - package.json: File chứa thông tin về các gói thư viện JS của ứng dụng
+ - composer.json: File cấu hình thư viện PHP của ứng dụng
+ - composer.lock: Ghi lại các phiên bản của các gói thư viện PHP cụ thể đã được cài đặt
+
+Vòng đời Request: 
+   Từ trình duyệt -> request
+   -> public/index.php -> bootstrap/app.php 
+   -> routers -> MiddleWare: trung gian kiểm tra request 
+   -> controller: xử lý logic 
+   -> model: truy vấn database 
+   -> view: trả về giao diện
+   -> response -> trình duyệt
+
+Service Container & Service Provider:
+   - Service Container:
+      + Quản lý cách tạo (class)
+         * Đối tượng tạo ra từ class -> instance
+      + Tự động đưa vào nơi cần sử dụng
+      + Hàm: bind, singleton, instance
+      
+   - Service Provider (Có thể tạo nhiều):
+      + Nơi đăng ký các service
+      + Nơi khai báo các class, service
+      + Đăng ký vào Service Container
+      + Sẽ chạy khi Web được khởi động
+
+Facades and Helpers
+ - Facades: 
+   Truy cập nhanh
+   + DB: Truy vấn DB
+   + Auth: Xác thực người dùng 
+   + Log: Ghi log
+   + Cache: Quản lý Cache
+   + Session: Quản lý Session
+   + Event: Quản lý Event
+   + Mail: Quản lý Mail
+   + Notification: Quản lý Notification
+
+ - Helpers: Hàm php viết sẵn:
+   + dd(): Debug và dừng chương trình
+   + dump(): Debug và tiếp tục chương trình
+   + info(): Ghi log thông tin
+   + error(): Ghi log lỗi
+   + warning(): Ghi log cảnh báo
+   + debug(): Ghi log debug
+   + ...
+   
+- MiddleWare: Các lớp trung gian xử lý request trước khi đến container, và response trước
+khi hành động bước tiếp theo. Nơi để *VALIDATE*.
+   + Dùng để đăng nhập.
+   + Phân quyền
+   + Ghi log
+   + Chặn spam, DDOT
+   + Cách tạo MiddleWare:
+      php artisan make:MiddleWare <name> 
+    Đăng ký toàn cục -> Đăng ký route cụ thể -> Gọi sử dụng
+   
+-Controller: 
