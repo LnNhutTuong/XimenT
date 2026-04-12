@@ -1,3 +1,4 @@
+
 <div id="modal-create-category" 
     class="hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area"
     data-sizes-store-url="{{ route('admin.sizes.store') }}"

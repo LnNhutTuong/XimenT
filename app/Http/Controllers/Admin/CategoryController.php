@@ -51,5 +51,10 @@ class CategoryController extends Controller
 
         return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục thành công!');
     }
+
+    public function show(Categories $category)
+    {
+        return view('admin.categories.detail', compact('category'));
+    }
     
 }
