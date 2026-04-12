@@ -11,12 +11,17 @@ class Categories extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description',
     ];
 
     // 1 Danh mục có nhiều Sản phẩm
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Products::class, 'category_id');
+    }
+
+    // 1 Danh mục có nhiều Size tương ứng
+    public function sizes()
+    {
+        return $this->belongsToMany(Sizes::class, 'category_size', 'category_id', 'size_id');
     }
 }

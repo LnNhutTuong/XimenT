@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="right-content col-span-4 border bg-black">L</div>
+        <div class="right-content col-span-4 border bg-black"></div>
     </div>
 </div>
 

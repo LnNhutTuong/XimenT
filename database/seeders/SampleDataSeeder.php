@@ -24,7 +24,6 @@ class SampleDataSeeder extends Seeder
         $cate = Categories::create([
             'name' => 'Áo Thun Nam',
             'slug' => 'ao-thun-nam',
-            'description' => 'Các loại áo thun chất liệu cotton'
         ]);
         
         $sizeM = Sizes::create(['name' => 'M']);

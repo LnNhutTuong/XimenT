@@ -16,7 +16,6 @@ return new class extends Migration
             // Liên kết với bảng danh mục //Liên kết với brands
             $table->foreignId('category_id')->constrained('product_categories')->onDelete('cascade');
             $table->foreignId('brand_id')->constrained('product_brands')->onDelete('cascade');
-
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description');

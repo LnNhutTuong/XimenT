@@ -10,7 +10,8 @@
     @include('frontend.layouts.header')
 
     <main>
-        @yield('content')       
+        {{ $slot ?? '' }}
+        @yield('content')
     </main>
 
     @include('frontend.layouts.footer')

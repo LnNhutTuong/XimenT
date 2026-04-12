@@ -14,10 +14,6 @@ class HomeController extends Controller
     public function products(){
         $products = DB::table('products')->get();
 
-        echo "<pre>";
-        print_r($products);
-        echo "</pre>";
-
         return view('frontend.products.index', compact('products'));
     }
 

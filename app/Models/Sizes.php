@@ -16,4 +16,10 @@ class Sizes extends Model
     {
         return $this->hasMany(ProductVariants::class);
     }
+
+    // 1 Size có thể thuộc nhiều Danh mục
+    public function categories()
+    {
+        return $this->belongsToMany(Categories::class, 'category_size', 'size_id', 'category_id');
+    }
 }

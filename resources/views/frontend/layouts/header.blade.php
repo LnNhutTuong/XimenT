@@ -10,6 +10,15 @@
                 <span class="btn-text">Sản phẩm</span>
                 <span class="btn-underline"></span>
             </x-nav-link>
+
+            @auth
+                @if(auth()->user()->isAdmin())
+                    <x-nav-link :href="route('admin.dashboard')" class="btn-base btn-black">
+                        <span class="btn-text" style="color: red;">Quản trị</span>
+                        <span class="btn-underline"></span>
+                    </x-nav-link>
+                @endif
+            @endauth
         </ul>
 
         <div class="title">
@@ -17,19 +26,34 @@
         </div>
 
         <div class="flex justify-end">
-  
-             <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-3">
 
-                <x-button class="btn-base">
-                    <span class="btn-text btn-black">Đăng nhập</span>
-                    <span class="btn-underline btn-black"></span>
-                </x-button>
+                @guest
+                    {{-- Chưa đăng nhập: hiện nút Đăng nhập và Đăng ký --}}
+                    <a href="{{ route('login') }}" class="btn-base btn-black">
+                        <span class="btn-text">Đăng nhập</span>
+                        <span class="btn-underline"></span>
+                    </a>
 
-               
-                <x-button class="btn-base">
-                    <span class="btn-text btn-black">Đăng ký</span>
-                    <span class="btn-underline btn-black"></span>
-                </x-button>
+                    <a href="{{ route('register') }}" class="btn-base btn-black">
+                        <span class="btn-text">Đăng ký</span>
+                        <span class="btn-underline"></span>
+                    </a>
+                @else
+                    {{-- Đã đăng nhập: hiện tên và nút Đăng xuất --}}
+                    <a href="{{ route('dashboard') }}" class="btn-base btn-black">
+                        <span class="btn-text">{{ auth()->user()->name }}</span>
+                        <span class="btn-underline"></span>
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn-base btn-black">
+                            <span class="btn-text">Đăng xuất</span>
+                            <span class="btn-underline"></span>
+                        </button>
+                    </form>
+                @endguest
 
             </div>
         </div>
