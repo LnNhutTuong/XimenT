@@ -2,7 +2,7 @@
 <div id="modal-create-category" 
     class="hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area"
     data-sizes-store-url="{{ route('admin.sizes.store') }}"
-    data-has-errors="{{ $errors->any() ? 'true' : 'false' }}">
+    data-has-errors="{{ $errors->hasBag('category_create') ? 'true' : 'false' }}">
     <div class="fixed inset-0 p-4 flex items-center justify-center overflow-auto pointer-events-none backdrop-area">
         <div class="modal-content w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 relative transform transition-all duration-300 scale-90 opacity-0 translate-y-4 pointer-events-auto">
             <div class="flex items-center pb-4 border-b border-gray-100">
@@ -19,7 +19,7 @@
                 
             </div>
             
-            @if($errors->any())
+            @if($errors->hasBag('category_create'))
                 <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 animate-shake">
                     <div class="flex items-center gap-2 text-red-600 font-bold mb-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -28,7 +28,7 @@
                         <span>Cần kiểm tra lại:</span>
                     </div>
                     <ul class="list-disc list-inside text-sm text-red-500 space-y-1">
-                        @foreach($errors->all() as $error)
+                        @foreach($errors->category_create->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
@@ -119,5 +119,5 @@
 </div>
 
 @push('scripts')
-    @vite(['resources/js/admin/category-modal.js', 'resources/js/admin/category-create.js'])
+    @vite(['resources/js/admin/category/category-modal.js', 'resources/js/admin/category/category-create.js'])
 @endpush

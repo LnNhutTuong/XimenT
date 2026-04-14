@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Quản lý danh mục - XimenT Admin')
+@section('title', 'Quản lý thương hiệu - XimenT Admin')
 
 @section('content')
 <div class="space-y-6">
@@ -8,45 +8,35 @@
     {{-- Page Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Quản lý danh mục</h2>
-            <p class="text-sm text-gray-500 mt-1">Tổng cộng <span class="font-semibold text-indigo-600">{{ $categories->count() }}</span> sản phẩm</p>
+            <h2 class="text-2xl font-bold text-gray-800">Quản lý thương hiệu</h2>
+            <p class="text-sm text-gray-500 mt-1">Tổng cộng <span class="font-semibold text-indigo-600">{{ $brands->count() }}</span> sản phẩm</p>
         </div>
 
         <div>            
-            @include('admin.categories.create')        
-            <button id="open-create-category" type="button"
+            @include('admin.brand.create')     
+            <button id="open-create-brand" type="button"
                 class="mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white 
                 text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] 
                 hover:bg-gray-300 hover:text-black transition-all">
-                Thêm danh mục
+                Thêm thương hiệu
             </button>
         </div>
            
     </div>
 
-    {{-- Flash Messages --}}
-    @if (session('success'))
-        <div class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-5 py-3 rounded-xl text-sm">
-            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Stats Cards --}}
     <div class="grid grid-cols-3 gap-5">
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Tổng danh mục</p>
-            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $categories->count() }}</p>
+            <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Tổng thương hiệu</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $brands->count() }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs text-green-500 uppercase tracking-wider font-semibold">Đang có sản phẩm</p>
-            <p class="text-3xl font-bold text-green-600 mt-2">{{ $categorywithproduct->count() }}</p>
+            <p class="text-3xl font-bold text-green-600 mt-2">{{ $brandwithproduct->count() }}</p>
         </div>
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs text-red-400 uppercase tracking-wider font-semibold">Không có sản phẩm</p>
-            <p class="text-3xl font-bold text-red-500 mt-2">{{ $categorywithoutproduct->count() }}</p>
+            <p class="text-3xl font-bold text-red-500 mt-2">{{ $brandwithoutproduct->count() }}</p>
         </div>
     </div>
 
@@ -81,7 +71,10 @@
                                 ID
                             </th>
                             <th scope="col" class="px-6 py-3 font-medium">
-                                Tên danh mục
+                                Logo
+                            </th>
+                            <th scope="col" class="px-6 py-3 font-medium">
+                                Tên thương hiệu
                             </th>                   
                             <th scope="col" class="px-6 py-3 font-medium">
                                 Số lượng sản phẩm
@@ -92,25 +85,28 @@
                             
                         </tr>
                     </thead>
-                    <tbody id="category-tbody">
-                      @foreach ($categories as $category)
+                    <tbody id="brand-tbody">
+                      @foreach ($brands as $brand)
                         <tr class="bg-neutral-primary border-b border-default">
                             <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
-                                {{ $category->id }}
+                                {{ $brand->id }}
                             </th>
+                             <td class="px-6 py-4 text-center">
+                                {{ $brand->logo }}
+                            </td>
                             <td class="px-6 py-4">
-                                {{ $category->name }}
+                                {{ $brand->name }}
                             </td>   
                             <td class="px-6 py-4 text-center">
-                                {{ $products->where('category_id', $category->id)->count() }}
+                                {{ $products->where('brand_id', $brand->id)->count() }}
                             </td>
 
                             <td class="px-6 py-4 text-center">
-                                <div class="category-action-container">            
-                                    @include('admin.categories.detail', $category)        
+                                <div class="brand-action-container">            
+                                    {{-- @include('admin.brand.detail', $brand) --}}        
                                     <button type="button"
                                         class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all"
-                                        data-target="modal-detail-category-{{ $category->id }}">
+                                        data-target="modal-detail-brand-{{ $brand->id }}">
                                         Xem chi tiết
                                     </button>
                                 </div> 

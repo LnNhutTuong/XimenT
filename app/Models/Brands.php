@@ -15,10 +15,9 @@ class Brands extends Model
         'description',
         'is_active',
     ];
-
-    // 1 Danh mục có nhiều Sản phẩm
+    
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Products::class, 'brand_id');
     }
 }

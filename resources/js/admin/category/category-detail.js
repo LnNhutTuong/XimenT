@@ -4,6 +4,30 @@ const DetailCategory = {
         this.initCloseButtons();
         this.initSlugGenerator();
         this.initSizeAddition();
+        this.initFormValidation();
+        this.initIsEdit();
+        this.checkErrors();
+    },
+
+    initFormValidation() {
+        document.addEventListener("submit", (e) => {
+            if (e.target.classList.contains("category-edit-form")) {
+                const form = e.target;
+                const selectedSizes = form.querySelectorAll(
+                    'input[name="sizes[]"]:checked',
+                );
+
+                if (selectedSizes.length === 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Thiếu thông tin",
+                        text: "Vui lòng chọn ít nhất một kích cỡ (size) cho danh mục này.",
+                        confirmButtonColor: "#000000ff",
+                    });
+                }
+            }
+        });
     },
 
     initOpenButtons() {
@@ -16,11 +40,79 @@ const DetailCategory = {
         });
     },
 
-    initIsEdit() {},
+    initIsEdit() {
+        document.addEventListener("click", (e) => {
+            if (e.target.classList.contains("btn-edit-category")) {
+                const modal = e.target.closest(".modal-detail-category");
+
+                const nameCategory = modal.querySelector(
+                    ".category-name-input",
+                );
+                const addNewSize = modal.querySelector(".add-new-size");
+                const chooseSize = modal.querySelectorAll(".choose-size");
+                const btnAccept = modal.querySelector(".btn-accept-edit");
+                const btnCancel = modal.querySelector(".btn-cancel-edit");
+                const btnEdit = modal.querySelector(".btn-edit-category");
+                const btnDelete = modal.querySelector(".btn-delete-category");
+
+                // enable input
+                nameCategory.disabled = false;
+
+                // show edit UI
+                addNewSize.classList.remove("hidden");
+
+                chooseSize.forEach((cb) => {
+                    cb.disabled = false;
+                });
+
+                btnAccept.classList.remove("hidden");
+                btnCancel.classList.remove("hidden");
+
+                // hide button edit/delete
+                btnEdit.classList.add("hidden");
+                btnDelete.classList.add("hidden");
+            }
+            if (
+                e.target.classList.contains("btn-cancel-edit") ||
+                e.target.classList.contains("btn-close-detail")
+            ) {
+                const modal = e.target.closest(".modal-detail-category");
+                if (modal) this.resetForm(modal);
+            }
+        });
+    },
+
+    resetForm(modal) {
+        const nameCategory = modal.querySelector(".category-name-input");
+        const addNewSize = modal.querySelector(".add-new-size");
+        const btnAccept = modal.querySelector(".btn-accept-edit");
+        const btnCancel = modal.querySelector(".btn-cancel-edit");
+        const btnEdit = modal.querySelector(".btn-edit-category");
+        const btnDelete = modal.querySelector(".btn-delete-category");
+        const chooseSize = modal.querySelectorAll(".choose-size");
+
+        //khoas liasj
+        nameCategory.disabled = true;
+
+        // an
+        addNewSize.classList.add("hidden");
+
+        chooseSize.forEach((cb) => {
+            cb.checked = cb.defaultChecked;
+
+            cb.disabled = true;
+        });
+
+        btnAccept.classList.add("hidden");
+        btnCancel.classList.add("hidden");
+
+        btnEdit.classList.remove("hidden");
+        btnDelete.classList.remove("hidden");
+    },
 
     initCloseButtons() {
         document.addEventListener("click", (e) => {
-            if (e.target.classList.contains("btn-close-detail")) {
+            if (e.target.closest(".btn-close-detail")) {
                 const modal = e.target.closest(".modal-detail-category");
                 if (modal) this.hideModal(modal);
             }
@@ -90,6 +182,12 @@ const DetailCategory = {
                     const result = await response.json();
 
                     if (result.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Thành công",
+                            text: "Thêm kích cỡ thành công",
+                        });
+
                         const newSize = result.data;
                         const label = document.createElement("label");
                         label.className =

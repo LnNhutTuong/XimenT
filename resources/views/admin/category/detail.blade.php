@@ -25,20 +25,20 @@
                         <!-- name category -->
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Tên danh mục <span class="text-red-500">*</span></label>
-                            <input type="text" name="name" value="{{ $category->name }}" required
+                            <input type="text" name="name" value="{{ old('name', $category->name) }}" required disabled
                                 placeholder="Ví dụ: Áo thun nam"
-                                class="category-name-input w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                                class="category-name-input  w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
                         </div>
 
                         <!-- slug -->
-                        <input type="hidden" name="slug" value="{{ $category->slug }}" class="category-slug-input">
+                        <input type="hidden" name="slug" value="{{ old('slug', $category->slug) }}" class="category-slug-input">
                  
                         <div class="flex items-center justify-between mb-3">
                             <label class="block text-sm font-semibold text-gray-700">Kích cỡ áp dụng (Sizes)</label>                          
                         </div>
 
                         <!--  add new size-->
-                        <div class="flex items-center gap-2">  
+                        <div class="add-new-size flex items-center gap-2 hidden" >  
                             <input type="text" class="size-name-input w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" placeholder="Ví dụ: XL">
                             <button type="button" class="btn-submit-new-size bg-[#09090a] rounded-lg text-white px-4 py-2 text-sm font-bold hover:bg-white hover:text-[#09090a] border hover:border-[#09090a] transition-all whitespace-nowrap">
                                 Thêm mới
@@ -46,14 +46,14 @@
                         </div>
 
                         <!-- choose size -->
-                        <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200 min-h-[200px] size-container">   
+                        <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200 min-h-[200px] size-container" >   
                             @php
-                                $categorySizeIds = $category->sizes->pluck('id')->toArray();
+                                $categorySizeIds = old('sizes', $category->sizes->pluck('id')->toArray());
                             @endphp
                             <div class="grid grid-cols-3 gap-3 size-checkbox-grid">
                                 @foreach($sizes as $size)
                                     <label class="group relative flex items-center justify-center p-3 rounded-xl border border-white bg-white hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
-                                        <input type="checkbox" name="sizes[]" value="{{ $size->id }}" class="hidden peer" {{ in_array($size->id, $categorySizeIds) ? 'checked' : '' }}>
+                                        <input disabled type="checkbox" name="sizes[]" value="{{ $size->id }}" class="choose-size hidden peer" {{ in_array($size->id, $categorySizeIds) ? 'checked' : '' }} >
                                         <span class="text-sm font-bold text-gray-600 peer-checked:text-blue-600 transition-colors">{{ $size->name }}</span>
                                         <div class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-xl pointer-events-none transition-all"></div>
                                         <div class="absolute top-1 right-1 opacity-0 peer-checked:opacity-100 transition-opacity">
@@ -69,22 +69,28 @@
                 </div>
                 
                 <div class="pt-6 border-t border-gray-100 flex gap-4">
-                    <button type="button" class="btn-close-detail px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 hover:text-gray-700 transition-all">
+                    <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-white border border-whi hover:bg-gray-200 hover:text-gray-700 transition-all transform hover:-translate-y-0.5 transition-all"">
                         Hủy bỏ
                     </button>
-                    <button type="submit" class="px-8 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-200 transform hover:-translate-y-0.5 transition-all">
+                    <button type="submit" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-200 transform hover:-translate-y-0.5 transition-all">
                         Cập nhật
+                    </button>   
+                    <button type="button" class="btn-edit-category px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-white hover:text-[#09090a] border border-[#09090a] hover:bg-white hover:text-[#09090a] transition-all whitespace-nowrap transform hover:-translate-y-0.5 transition-all"">
+                        Chỉnh sửa
                     </button>
-                    <button type="button" class="btn-delete-category px-8 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-red-600 to-red-600 hover:from-red-700 hover:to-red-700 shadow-lg shadow-red-200 transform hover:-translate-y-0.5 transition-all">
+                    <button type="submit" form="form-delete-{{ $category->id}}" class="btn-delete-category px-8 py-3 rounded-xl text-black text-sm font-bold bg-white border border-black hover:bg-black hover:text-red-500 transform hover:-translate-y-0.5 transition-all">
                         Xóa
                     </button>
-                    
                 </div>            
+            </form>
+            <form id="form-delete-{{ $category->id}}" action="{{ route('admin.categories.destroy', $category->id) }}" method="post">
+                @csrf
+                @method('DELETE')
             </form>
         </div>
     </div>
 </div>
 
 @pushOnce('scripts')
-    @vite(['resources/js/admin/category-detail.js'])
+    @vite(['resources/js/admin/category/category-detail.js']);
 @endPushOnce

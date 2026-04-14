@@ -87,6 +87,12 @@ const CategoryCreate = {
                 const result = await response.json();
 
                 if (result.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Thành công",
+                        text: "Thêm kích cỡ thành công",
+                    });
+
                     if (noSizeMessage) noSizeMessage.style.display = "none";
                     if (sizeGrid) sizeGrid.classList.remove("hidden");
 

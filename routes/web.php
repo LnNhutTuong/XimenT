@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\BrandController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,13 +40,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // Trang tổng quan admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Quản lý sản phẩm, danh mục
-    Route::resource('products', ProductController::class);
-    Route::delete('products/gallery/{id}', [ProductController::class, 'deleteImage'])->name('products.deleteImage');
-    Route::get('get-sizes-by-category/{id}', [ProductController::class, 'getSizesByCategory'])->name('products.getSizes');
-
+    //Quản lý danh mục
     Route::resource('categories', CategoryController::class);
+
     Route::post('sizes/store', [SizeController::class, 'store'])->name('sizes.store');
+    Route::delete('sizes/delete/{id}', [SizeController::class, 'destroy'])->name('sizes.delete');
+
+    //Quan ly thuong hieu
+    Route::resource('brands', BrandController::class);
 
 });
     

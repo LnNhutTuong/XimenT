@@ -2,14 +2,6 @@
     <h1 class="text-lg font-semibold text-gray-800">Quản trị hệ thống</h1>
     <div class="flex items-center space-x-4">
         <span class="text-sm text-gray-600">Xin chào, <strong>{{ auth()->user()->name }}</strong></span>
-        
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="text-sm text-red-500 font-semibold hover:underline">
-                Đăng xuất
-            </button>
-        
-        </form>
     </div>
 
 </header>

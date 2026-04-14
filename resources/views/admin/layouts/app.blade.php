@@ -29,6 +29,34 @@
 
     @vite('resources/js/admin/common.js')
     @stack('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: '{{ session("success") }}',
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: '{{ session("error") }}',
+                });
+            @endif
+
+            @if($errors->any())
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Thất bại',
+                    text: 'Vui lòng kiểm tra lại thông tin nhập vào!',
+                });
+            @endif
+        });
+    </script>
 </body>
 
 </html>

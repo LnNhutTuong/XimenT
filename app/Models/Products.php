@@ -17,26 +17,24 @@ class Products extends Model
         'is_active',
     ];
 
-    // 1 Sản phẩm có nhiều Biến thể
     public function variants()
     {
         return $this->hasMany(ProductVariants::class);
     }
 
-    // 1 Sản phẩm thuộc 1 Danh mục
     public function category()
     {
         return $this->belongsTo(Categories::class, 'category_id');
     }
     
-     public function brand()
+    public function brand()
     {
         return $this->belongsTo(Brands::class, 'brand_id');
     }
 
-    // 1 Sản phẩm có nhiều Ảnh chi tiết
     public function images()
     {
         return $this->hasMany(ProductImages::class, 'product_id');
     }
+
 }
