@@ -40,7 +40,7 @@
 
                         <!-- logo -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ảnh đại diện <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Ảnh đại diện<span class="text-red-500">*</span></label>
                             
                            <div class="flex items-start gap-4">
                                 <div id="image-preview" class="w-24 h-24 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center bg-gray-50 flex-shrink-0 overflow-hidden">

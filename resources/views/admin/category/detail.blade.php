@@ -1,7 +1,5 @@
 <div id="modal-detail-category-{{ $category->id }}" 
-    class="modal-detail-category hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area"
-    data-category-id="{{ $category->id }}"
-    data-sizes-store-url="{{ route('admin.sizes.store') }}">
+    class="modal-detail-category hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area">
     <div class="fixed inset-0 p-4 flex items-center justify-center overflow-auto pointer-events-none backdrop-area">
         <div class="modal-content w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 relative transform transition-all duration-300 scale-90 opacity-0 translate-y-4 pointer-events-auto">
             <div class="flex items-center pb-4 border-b border-gray-100">

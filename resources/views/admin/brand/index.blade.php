@@ -91,26 +91,27 @@
                             <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
                                 {{ $brand->id }}
                             </th>
-                             <td class="px-6 py-4 text-center">
-                                {{ $brand->logo }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $brand->name }}
+                             <td class="px-6 py-4 ">
+                                <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{$brand->name}}" class=" w-14 h-14 object-cover mx-auto border border-dashed border-gray-500">
                             </td>   
+                             <td class="px-6 py-4 ">
+                                {{ $brand->name }}
+                            </td>
                             <td class="px-6 py-4 text-center">
                                 {{ $products->where('brand_id', $brand->id)->count() }}
                             </td>
 
                             <td class="px-6 py-4 text-center">
-                                <div class="brand-action-container">            
-                                    {{-- @include('admin.brand.detail', $brand) --}}        
+                                <div class="brand-action-container">      
                                     <button type="button"
                                         class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all"
                                         data-target="modal-detail-brand-{{ $brand->id }}">
                                         Xem chi tiết
-                                    </button>
+                                    </button>      
+                                    @include('admin.brand.detail', $brand)        
+                                    
                                 </div> 
-                             </td>                  
+                            </td>                    
                         </tr>
                       @endforeach
                     </tbody>

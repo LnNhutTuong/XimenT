@@ -58,8 +58,8 @@
                 </a>
             </li>
             <li class="relative border-l border-gray-700 ml-4 pl-4 before:absolute before:w-3 before:h-px before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-700 hover:before:bg-indigo-400 before:transition-colors">
-                <a href="#" class="group flex items-center text-[13px] py-2 rounded-lg px-3 transition-all duration-200 {{ request()->routeIs('admin.products.*') ? 'bg-indigo-500/10 text-indigo-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
-                    <span class="w-1.5 h-1.5 rounded-full mr-2 transition-all duration-300 {{ request()->routeIs('admin.products.*') ? 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]' : 'bg-gray-600 group-hover:bg-gray-400' }}"></span>
+                <a href="{{ route('admin.products.index') }}" class="group flex items-center text-[13px] py-2 rounded-lg px-3 transition-all duration-200 {{ request()->routeIs('admin.product.*') ? 'bg-indigo-500/10 text-indigo-400 font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5' }}">
+                    <span class="w-1.5 h-1.5 rounded-full mr-2 transition-all duration-300 {{ request()->routeIs('admin.product.*') ? 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]' : 'bg-gray-600 group-hover:bg-gray-400' }}"></span>
                     Sản phẩm
                 </a>
             </li>
