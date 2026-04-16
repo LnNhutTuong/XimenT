@@ -1,14 +1,19 @@
 const ProductDetail = {
     init() {
-        const container = document.getElementById("createProductForm");
-        if (!container) return;
+        const detailForms = document.querySelectorAll(
+            'form[id^="productForm-"]',
+        );
 
-        this.initSlugGenerator(container);
-        this.initFormValidation(container);
-        this.initSizeWithCategory(container);
-        this.initGiaYeuThuong(container);
-        this.initPreviewProfile(container);
-        this.initPreviewGallery(container);
+        detailForms.forEach((form) => {
+            this.initSlugGenerator(form);
+            this.initFormValidation(form);
+            this.initSizeWithCategory(form);
+            this.initGiaYeuThuong(form);
+            this.initGiaYeuThuongToPercent(form);
+            this.initPreviewProfile(form);
+            this.initPreviewGallery(form);
+            this.initEditMode(form);
+        });
     },
 
     initPreviewGallery(container) {
@@ -74,11 +79,11 @@ const ProductDetail = {
     },
 
     initPreviewProfile(container) {
-        const imageInput = container.querySelector("#image");
-        const imagePreview = container.querySelector("#preview-img");
-        const imagePlaceHolder = container.querySelector("#image-placeholder");
+        const imageInput = container.querySelector(".product-image-input");
+        const imagePreview = container.querySelector(".product-image-preview");
+        const imagePlaceHolder = container.querySelector(".image-placeholder");
 
-        if (imageInput) {
+        if (imageInput && imagePreview) {
             imageInput.addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -86,22 +91,172 @@ const ProductDetail = {
                     reader.onload = function (e) {
                         imagePreview.src = e.target.result;
                         imagePreview.classList.remove("hidden");
-                        imagePlaceHolder.classList.add("hidden");
+                        if (imagePlaceHolder)
+                            imagePlaceHolder.classList.add("hidden");
                     };
                     reader.readAsDataURL(file);
-                } else {
-                    imagePreview.classList.add("hidden");
-                    imagePlaceHolder.classList.remove("hidden");
                 }
             });
         }
     },
 
+    initEditMode(container) {
+        container
+            .closest(".detail-product-modal")
+            .addEventListener("click", (e) => {
+                const modal = e.target.closest(".detail-product-modal");
+
+                if (e.target.classList.contains("btn-edit-product")) {
+                    //quá cao siêu
+                    const variantsContainer = modal.querySelector("#variants");
+                    if (variantsContainer) {
+                        container._originalVariantsHTML =
+                            variantsContainer.innerHTML;
+                    }
+
+                    modal
+                        .querySelectorAll("input, select, textarea")
+                        .forEach((input) => {
+                            if (
+                                !input.classList.contains("discount-amount") &&
+                                !input.id.includes("slug")
+                            ) {
+                                input.disabled = false;
+                                input.classList.remove("bg-gray-50");
+                            }
+                        });
+
+                    const descriptionTextarea = modal.querySelector(
+                        "textarea[name='description']",
+                    );
+                    if (
+                        descriptionTextarea &&
+                        typeof CKEDITOR !== "undefined"
+                    ) {
+                        const editorInstance =
+                            CKEDITOR.instances[descriptionTextarea.id];
+                        if (editorInstance) {
+                            editorInstance.setReadOnly(false);
+                        }
+                    }
+
+                    modal
+                        .querySelectorAll(
+                            ".btn-add-variant, .btn-remove-variant",
+                        )
+                        .forEach((btn) => {
+                            btn.classList.remove(
+                                "pointer-events-none",
+                                "opacity-20",
+                            );
+                        });
+
+                    modal
+                        .querySelector(".btn-accept-edit")
+                        ?.classList.remove("hidden");
+                    modal
+                        .querySelector(".btn-cancel-edit")
+                        ?.classList.remove("hidden");
+                    modal
+                        .querySelector(".btn-edit-product")
+                        ?.classList.add("hidden");
+                    modal
+                        .querySelector(".btn-delete-product")
+                        ?.classList.add("hidden");
+                }
+
+                if (e.target.classList.contains("btn-cancel-edit")) {
+                    const form = modal.querySelector("form");
+
+                    const variantsContainer = modal.querySelector("#variants");
+                    if (container._originalVariantsHTML) {
+                        variantsContainer.innerHTML =
+                            container._originalVariantsHTML;
+                    }
+
+                    form.reset();
+
+                    modal
+                        .querySelectorAll("input, select, textarea")
+                        .forEach((input) => {
+                            input.disabled = true;
+                            input.classList.add("bg-gray-50");
+                        });
+
+                    //cái này chịu thua =))
+                    const descriptionTextarea = modal.querySelector(
+                        "textarea[name='description']",
+                    );
+                    if (
+                        descriptionTextarea &&
+                        typeof CKEDITOR !== "undefined"
+                    ) {
+                        const editorInstance =
+                            CKEDITOR.instances[descriptionTextarea.id];
+                        if (editorInstance) {
+                            editorInstance.setReadOnly(true);
+                        }
+                    }
+                    modal
+                        .querySelectorAll(
+                            ".btn-add-variant, .btn-remove-variant",
+                        )
+                        .forEach((btn) => {
+                            btn.classList.add(
+                                "pointer-events-none",
+                                "opacity-20",
+                            );
+                        });
+
+                    this.initGiaYeuThuongToPercent(container);
+
+                    modal
+                        .querySelector(".btn-accept-edit")
+                        ?.classList.add("hidden");
+                    modal
+                        .querySelector(".btn-cancel-edit")
+                        ?.classList.add("hidden");
+                    modal
+                        .querySelector(".btn-edit-product")
+                        ?.classList.remove("hidden");
+                    modal
+                        .querySelector(".btn-delete-product")
+                        ?.classList.remove("hidden");
+                }
+            });
+    },
+
+    parseCurrency(value) {
+        return parseFloat(value.replace(/\D/g, "")) || 0;
+    },
+
+    formatCurrency(value) {
+        return (
+            new Intl.NumberFormat("vi-VN").format(Math.round(value)) + " VNĐ"
+        );
+    },
+
+    initGiaYeuThuongToPercent(container) {
+        const sellPriceInput = container.querySelector(".sell-price");
+        const discountAmountInput = container.querySelector(".discount-amount");
+        const percentInput = container.querySelector(".discount-percent");
+
+        if (!sellPriceInput || !discountAmountInput || !percentInput) return;
+
+        const sellPrice = this.parseCurrency(sellPriceInput.value);
+        const discountPrice = this.parseCurrency(discountAmountInput.value);
+
+        if (sellPrice > 0) {
+            const percent = ((sellPrice - discountPrice) / sellPrice) * 100;
+            percentInput.value = Math.round(percent) + " %";
+        }
+    },
+
     initGiaYeuThuong(container) {
-        const basePrice = container.querySelector("#base_price");
-        const sellPrice = container.querySelector("#sell_price");
-        const discountPercent = container.querySelector(".discount_percent");
-        const discountAmount = container.querySelector("#discount_amount");
+        const basePrice = container.querySelector(".base-price");
+        const sellPrice = container.querySelector(".sell-price");
+        const discountPercent = container.querySelector(".discount-percent");
+        const discountAmount = container.querySelector(".discount-amount");
 
         if (!sellPrice || !discountPercent || !discountAmount) return;
 
@@ -424,12 +579,6 @@ const ProductDetail = {
             if (!sellPrice || !sellPrice.value.trim()) {
                 e.preventDefault();
                 return showError("Vui lòng nhập giá bán.");
-            }
-
-            const imageProduct = form.querySelector("input[name='image']");
-            if (!imageProduct || imageProduct.files.length === 0) {
-                e.preventDefault();
-                return showError("Vui lòng chọn ảnh đại diện cho sản phẩm.");
             }
 
             const galleryImages = form.querySelector(

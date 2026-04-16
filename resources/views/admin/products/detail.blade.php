@@ -1,3 +1,4 @@
+<div class="detail-product-modal">
 <x-my-modal name="detail-product-{{$product->id}}">
     <x-slot name="title">
         Chi tiết sản phẩm
@@ -101,17 +102,19 @@
                                     <div class="w-1/3 flex flex-col">
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Hình đại diện <span class="text-red-500">*</span></label>
                                         <div class="relative w-full aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center bg-gray-50 flex-shrink-0 group overflow-hidden">
-                                            <svg class="w-5 h-5 text-indigo-500 {{ $product->image ? 'hidden' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <svg class="image-placeholder w-5 h-5 text-indigo-500 {{ $product->image ? 'hidden' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                                </svg>
-                                            <img id="preview-img-{{$product->id}}" src="{{ asset('storage/'.$product->image) }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover {{ $product->image ? '' : 'hidden' }}">
+                                            </svg>
+
+                                            <img id="preview-img-{{$product->id}}" src="{{ asset('storage/'.$product->image) }}" alt="Preview" class="product-image-preview absolute inset-0 w-full h-full object-cover {{ $product->image ? '' : 'hidden' }}">
                                             
                                             <label for="image_{{$product->id}}" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
                                                 <span class="bg-white/90 text-indigo-700 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">Đổi ảnh</span>
                                             </label>
 
                                         </div>
-                                        <input type="file" id="image_{{$product->id}}" name="image" class="hidden" accept="image/*" disabled>
+
+                                        <input type="file" id="image_{{$product->id}}" name="image" class="product-image-input hidden" accept="image/*" disabled>
                                         <p class="text-[10px] text-gray-400 mt-2 text-center">Tối đa 10MB. Ảnh chính của sản phẩm.</p>
                                     </div>
 
@@ -175,10 +178,10 @@
                                 </div>
 
                                 <div class="mt-2 flex items-end pb-2 gap-2">
-                                    <svg class="btn-add-variant size-10 hover:cursor-pointer hover:text-green-500 transform hover:-translate-y-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <svg class="btn-add-variant size-10 pointer-events-none opacity-20 hover:cursor-pointer hover:text-green-500 transform hover:-translate-y-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-                                    <svg class="btn-remove-variant size-10 hover:cursor-pointer hover:text-red-500 transform hover:-translate-y-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <svg class="btn-remove-variant size-10 pointer-events-none opacity-20 hover:cursor-pointer hover:text-red-500 transform hover:-translate-y-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </div>
@@ -236,7 +239,7 @@
                <button type="submit" form="productForm-{{ $product->id }}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
                         Cập nhật
                     </button>
-                    <button type="button" class="btn-close-modal hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
+                    <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
                         Hủy bỏ
                     </button>
                     <button type="button" class="btn-edit-product px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
@@ -248,6 +251,7 @@
                 </div>      
     </x-slot>
 </x-my-modal>
+</div>
 
 @push('scripts')
     @vite(['resources/js/admin/product/product-detail.js'])

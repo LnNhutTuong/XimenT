@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Products;
 use App\Models\Categories;
@@ -28,7 +29,7 @@ class ProductController extends Controller
     }
 
    public function store(Request $request)
-    {
+   {
         // bỏ mấy cái VNĐ và ,
         $request->merge([
             'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
@@ -117,4 +118,105 @@ class ProductController extends Controller
 
         return redirect()->back()->with("success", "Thêm sản phẩm thành công!");   
     }
+
+    public function update(Request $request, Products $product){
+        $request->merge([
+            'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
+            'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price), //gia ban
+            'discount_amount' => (int) preg_replace('/[^0-9]/', '', $request->discount_amount), //gia yeu thuong
+        ]);  
+
+
+        $slug = $request->slug;
+
+        $request->validateWithBag('product_create', [
+            // product
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:10000',
+            'product_category_id' => 'required|exists:product_categories,id',
+            'product_brand_id' => 'required|exists:product_brands,id',
+            'product_status' => 'required|boolean', 
+            'base_price' => 'required|numeric',
+            'sell_price' => 'required|numeric', 
+
+            //khác với store thì update không bắt buộc phải có ảnh
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            
+            // gallery images
+            'gallery_images' => 'nullable|array', 
+            'gallery_images.*' => 'image|max:2048',
+
+            // variants
+            'sizes' => 'required|array', 
+            'quantities' => 'required|array',
+            'discount_amount' => 'nullable|numeric', 
+        ]);
+
+        $imagePath = $product->image;
+        if($request->hasFile('image')){
+            if($product->image){
+                Storage::disk('public')->delete($product->image); 
+            }
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update([
+            'category_id' => $request->product_category_id,
+            'brand_id' => $request->product_brand_id,
+            'name' => $request->name,
+            'slug' => $slug, 
+            'description' => $request->description,
+            'base_price' => $request->base_price,
+            'image' => $imagePath,
+            'is_active' => $request->product_status,
+        ]);
+
+
+        //neu co thi update con khong co thi them
+       if ($request->has('sizes')) {
+        foreach ($request->sizes as $index => $size_id) {
+            if (empty($size_id)) continue;
+            ProductVariants::updateOrCreate(
+                    ['product_id' => $product->id, 'size_id' => $size_id], 
+                    [
+                        'stock_quantity' => $request->quantities[$index] ?? 0,
+                        'price' => $request->sell_price,
+                        'discount_price' => $request->discount_amount,
+                        'sku' => Str::upper(Str::random(8)),
+                    ]
+                );
+            }
+        }
+
+        //them anh moi
+        if ($request->hasFile('gallery_images')) {
+
+            $product->images()->delete();
+
+            foreach ($request->file('gallery_images') as $index => $file) {
+                $path = $file->store('products/gallery', 'public');
+
+                ProductImages::create([
+                    'product_id' => $product->id, 
+                    'image_path' => $path, 
+                    'sort_order' => $index,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with("success", "Cập nhật sản phẩm thành công!");   
+    }
+
+    public function destroy(Products $product){
+
+        $hasOrder = $product->variants()->whereHas('order_details')->exists();
+        if($hasOrder){
+            return redirect()->back()->with("error", "Sản phẩm đã có đơn hàng không thể xóa!");   
+        }
+        $product->variants()->delete();
+        $product->images()->delete();
+        $product->delete();
+        return redirect()->back()->with("success", "Xóa sản phẩm thành công!");   
+    }
 }
+

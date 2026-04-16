@@ -1,17 +1,14 @@
 const ProductCreate = {
     init() {
-        const container = document.querySelectorAll('form[id^="productForm-"]'); //bắt đầu với
+        const container = document.getElementById("createProductForm");
         if (!container) return;
 
-        container.forEach((form) => {
-            this.initSlugGenerator(form);
-            this.initFormValidation(form);
-            this.initSizeWithCategory(form);
-            this.initGiaYeuThuong(form);
-            this.initGiaYeuThuongToPercent(form);
-            this.initPreviewProfile(form);
-            this.initPreviewGallery(form);
-        });
+        this.initSlugGenerator(container);
+        this.initFormValidation(container);
+        this.initSizeWithCategory(container);
+        this.initGiaYeuThuong(container);
+        this.initPreviewProfile(container);
+        this.initPreviewGallery(container);
     },
 
     initPreviewGallery(container) {
@@ -62,7 +59,7 @@ const ProductCreate = {
                     div.querySelector("button").addEventListener(
                         "click",
                         () => {
-                            filesArray.splice(index, 1); //splice: xoa 1 phan tu tai vi tri index
+                            filesArray.splice(index, 1); //splice: xoa tai vi tri index
                             renderPreviewGallery();
                             syncFilesToInput();
                         },
@@ -97,30 +94,6 @@ const ProductCreate = {
                     imagePlaceHolder.classList.remove("hidden");
                 }
             });
-        }
-    },
-
-    parseCurrency(value) {
-        return parseFloat(value.replace(/\D/g, "")) || 0;
-    },
-
-    formatCurrency(value) {
-        return (
-            new Intl.NumberFormat("vi-VN").format(Math.round(value)) + " VNĐ"
-        );
-    },
-
-    initGiaYeuThuongToPercent(container) {
-        const sellPriceInput = container.querySelector(".sell-price");
-        const discountAmountInput = container.querySelector(".discount-amount");
-        const percentInput = container.querySelector(".discount-percent");
-
-        const sellPrice = this.parseCurrency(sellPriceInput.value);
-        const discountPrice = this.parseCurrency(discountAmountInput.value);
-
-        if (sellPrice > 0) {
-            const percent = ((sellPrice - discountPrice) / sellPrice) * 100;
-            percentInput.value = Math.round(percent) + " %";
         }
     },
 
