@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Products::with('variants')->get();
+        $products = Products::with(['variants','images'])->get();
         $categories = Categories::with('sizes')->get();
         $brands = Brands::all();
         $productsInStock = Products::where('is_active', 1)->get();
@@ -27,30 +27,31 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'categories', 'brands', 'productsInStock', 'productsOutOfStock', 'ProductVariants'));
     }
 
-    public function checkSlug(Request $request)
-    {
-        $slug = Str::slug($request->name);
-        $exists = Products::where('slug', $slug)->exists();
-        return response()->json([
-            'exists' => $exists,
-            'slug' => $slug
-        ]);
-    }
-
    public function store(Request $request)
     {
+        // bỏ mấy cái VNĐ và ,
         $request->merge([
             'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
             'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price), //gia ban
             'discount_amount' => (int) preg_replace('/[^0-9]/', '', $request->discount_amount), //gia yeu thuong
         ]);  
+
+        //random slug or sku (giải quyết được cái function 300 dòng của tôi :D)
+        $baseSlug = $request->slug; //gửi lên
+        $slug = $baseSlug; // lưu mẫu
         
-        // dd($request->all());
+        $count = 1; 
+        while (Products::where('slug', $slug)->exists()) { // nếu tồn tại
+            $slug = $baseSlug . '-' . $count; // nối chuỗi count vào
+            $count++; // nếu trùng thì lên nữa
+        }
+
+        //nếu tạo slug kiểu trên bắt buộc phải bỏ validate vì nếu validate thì nó sẽ có unique :D
+        // mà nếu unique thì nó sẽ không cho tạo slug trùng nhau :D 
 
         $request->validateWithBag('product_create', [
             // product
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:products,slug',
             'description' => 'required|string|max:10000',
             'product_category_id' => 'required|exists:product_categories,id',
             'product_brand_id' => 'required|exists:product_brands,id',
@@ -67,11 +68,6 @@ class ProductController extends Controller
             'sizes' => 'required|array', 
             'quantities' => 'required|array',
             'discount_amount' => 'nullable|numeric', 
-        ],
-        [
-            'slug.required' => 'Vui lòng nhập slug.',
-            'slug.unique'   => 'Slug đã tồn tại, vui lòng nhập slug khác.',
-            
         ]);
 
         $imagePath = '';
@@ -83,7 +79,7 @@ class ProductController extends Controller
             'category_id' => $request->product_category_id,
             'brand_id' => $request->product_brand_id,
             'name' => $request->name,
-            'slug' => Str::slug($request->name), 
+            'slug' => $slug, 
             'description' => $request->description,
             'base_price' => $request->base_price,
             'image' => $imagePath,

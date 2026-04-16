@@ -68,11 +68,11 @@
                             <div class="flex gap-4 mt-2">
                                 <div class="flex-1">
                                     <label for="base_price_{{$product->id}}">Giá nhập <span class="text-red-500">*</span></label>
-                                    <input type="text" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="base_price" id="base_price_{{$product->id}}" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50" placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->base_price, 0, ',', '.') }} VNĐ">
+                                    <input type="text" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="base_price" id="base_price_{{$product->id}}" class="base-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50" placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->base_price, 0, ',', '.') }} VNĐ">
                                 </div>
                                 <div class="flex-1">
                                     <label for="sell_price_{{$product->id}}">Giá bán <span class="text-red-500">*</span></label>
-                                    <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="sell_price" id="sell_price_{{$product->id}}" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
+                                    <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="sell_price" id="sell_price_{{$product->id}}" class="sell-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
                                         placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->variants->first()->price ?? 0, 0, ',', '.') }} VNĐ">
                                         
                                 </div>
@@ -82,12 +82,12 @@
                                 <!-- cho 1 cai function tu dong tinh thang nay dua tren sell_price and discount_amount -->
                                 <div class="flex-1">
                                     <label for="discount_percent_{{$product->id}}">Giảm giá (%)</label>
-                                    <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_percent" id="discount_percent_{{$product->id}}" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
-                                        placeholder="10%">
+                                    <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_percent" id="discount_percent_{{$product->id}}" class="discount-percent w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
+                                        placeholder="%">
                                 </div>
                                 <div class="flex-1">
                                     <label for="discount_amount">Giá yêu thương<span class="text-red-500">*</span></label>
-                                    <input type="type" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" 
+                                    <input type="type" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount_{{$product->id}}" class="discount-amount w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" 
                                         disabled
                                         placeholder="Tự động tính"
                                         value="{{ number_format($product->variants->first()->discount_price ?? 0, 0, ',', '.') }} VNĐ">
@@ -129,11 +129,21 @@
                                         </label>
                                         
                                         <!-- Khu vực hiển thị xem trước ảnh chi tiết -->
-                                        <div id="gallery-preview-container" class="grid grid-cols-3 gap-2 mt-2  max-h-24 overflow-y-auto">
-                                            @if(is_array($product->gallery_images))
-                                                @foreach($product->gallery_images as $image)
-                                                    <img src="{{ asset('storage/'.$image) }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover {{ $image ? '' : 'hidden' }}">
+                                       <div id="gallery-preview-container" class="grid grid-cols-3 gap-2 mt-2 max-h-24 overflow-y-auto">
+                                            @if($product->images->isNotEmpty()) 
+                                                @foreach($product->images as $image)
+                                                    <div class="relative w-24 h-24"> 
+                                                        <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                                            alt="{{ $product->name }}" 
+                                                            class="w-24 h-24 object-cover rounded-lg">
+                                                             <button type="button"
+                                                                class="button-remove-gallery-image absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded">
+                                                                x
+                                                            </button>
+                                                    </div>
                                                 @endforeach
+                                            @else
+                                                <p class="col-span-3 text-gray-500 text-sm">Không có hình ảnh chi tiết.</p>
                                             @endif
                                         </div>
                                     </div>
@@ -210,27 +220,6 @@
                                     @endforeach
                                 </div>
                             @endforeach
-                        </div>
-                    </div>
-                    <div class="card-demo flex-1 ">
-                        <h1 class="text-xl font-bold mb-3">Card demo</h1>
-                        <div class="block w-[222px] p-6 border border-gray-400 rounded-lg shadow-xs flex flex-col col-between mx-auto text-center">
-                            <a href="#">
-                                <img class="rounded-lg h-40 w-36 border border-black mx-auto " src="" alt="" />
-                            </a>
-          
-                            <a href="#">
-                                <h5 class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading overflow-hidden">
-                                    Quần Superman
-                                </h5>
-                            </a>
-                            <div class="flex flex-col mt-auto text-center mt-2">
-                                <p class=" text-body font-bold text-red-600">100.000 VNĐ </p>
-                                <button type="button"
-                                    class="btn-open-detail mt-2 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all">
-                                    Thêm vào giỏ
-                                </button>
-                            </div> 
                         </div>
                     </div>
                 </div>

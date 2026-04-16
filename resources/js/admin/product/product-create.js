@@ -1,14 +1,17 @@
 const ProductCreate = {
     init() {
-        const container = document.getElementById("createProductForm");
+        const container = document.querySelectorAll('form[id^="productForm-"]'); //bắt đầu với
         if (!container) return;
 
-        this.initSlugGenerator(container);
-        this.initFormValidation(container);
-        this.initSizeWithCategory(container);
-        this.initGiaYeuThuong(container);
-        this.initPreviewProfile(container);
-        this.initPreviewGallery(container);
+        container.forEach((form) => {
+            this.initSlugGenerator(form);
+            this.initFormValidation(form);
+            this.initSizeWithCategory(form);
+            this.initGiaYeuThuong(form);
+            this.initGiaYeuThuongToPercent(form);
+            this.initPreviewProfile(form);
+            this.initPreviewGallery(form);
+        });
     },
 
     initPreviewGallery(container) {
@@ -59,7 +62,7 @@ const ProductCreate = {
                     div.querySelector("button").addEventListener(
                         "click",
                         () => {
-                            filesArray.splice(index, 1);
+                            filesArray.splice(index, 1); //splice: xoa 1 phan tu tai vi tri index
                             renderPreviewGallery();
                             syncFilesToInput();
                         },
@@ -94,6 +97,30 @@ const ProductCreate = {
                     imagePlaceHolder.classList.remove("hidden");
                 }
             });
+        }
+    },
+
+    parseCurrency(value) {
+        return parseFloat(value.replace(/\D/g, "")) || 0;
+    },
+
+    formatCurrency(value) {
+        return (
+            new Intl.NumberFormat("vi-VN").format(Math.round(value)) + " VNĐ"
+        );
+    },
+
+    initGiaYeuThuongToPercent(container) {
+        const sellPriceInput = container.querySelector(".sell-price");
+        const discountAmountInput = container.querySelector(".discount-amount");
+        const percentInput = container.querySelector(".discount-percent");
+
+        const sellPrice = this.parseCurrency(sellPriceInput.value);
+        const discountPrice = this.parseCurrency(discountAmountInput.value);
+
+        if (sellPrice > 0) {
+            const percent = ((sellPrice - discountPrice) / sellPrice) * 100;
+            percentInput.value = Math.round(percent) + " %";
         }
     },
 
@@ -363,8 +390,7 @@ const ProductCreate = {
     initFormValidation(container) {
         const form = container;
 
-        form.addEventListener("submit", async function (e) {
-            e.preventDefault();
+        form.addEventListener("submit", function (e) {
             if (typeof CKEDITOR !== "undefined") {
                 for (let instance in CKEDITOR.instances) {
                     CKEDITOR.instances[instance].updateElement();
@@ -454,47 +480,6 @@ const ProductCreate = {
             if (!hasQuantity) {
                 e.preventDefault();
                 return showError("Vui lòng nhập số lượng cho phân loại.");
-            }
-
-            //check slug rat nhuc dau, toi da qua met vi cai nay
-            // cai nay ko co cach nao check duoc ngoai bang API
-            const productName = form.querySelector("#product_name").value;
-            const csrfToken = form.querySelector('input[name="_token"]').value;
-
-            const checkSlugUrl =
-                form.dataset.checkSlugUrl || "/admin/products/check-slug";
-
-            try {
-                const response = await fetch(checkSlugUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                        Accept: "application/json",
-                    },
-                    body: JSON.stringify({ name: productName }),
-                });
-
-                const data = await response.json();
-
-                if (data.exists) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Tên sản phẩm trùng lặp",
-                        text: "Tên sản phẩm này sinh ra đường dẫn (slug) đã tồn tại trong hệ thống. Vui lòng đổi tên khác.",
-                        confirmButtonColor: "#000000ff",
-                    });
-                    return;
-                }
-                form.submit();
-            } catch (error) {
-                console.error("Lỗi khi kiểm tra slug:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Lỗi kết nối",
-                    text: "Không thể kiểm tra dữ liệu lúc này. Vui lòng thử lại.",
-                    confirmButtonColor: "#000000ff",
-                });
             }
 
             function showError(message) {

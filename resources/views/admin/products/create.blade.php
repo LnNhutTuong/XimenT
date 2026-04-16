@@ -24,9 +24,11 @@
                         </div>
                         
                         <!-- slug -->
-                        <div>
-                            <input type="text" name="slug" id="product_slug" hidden>
-
+                        <div class="mt-2">                            
+                            <label for="product_slug" class="block text-sm font-semibold text-gray-700">Slug <span class="text-red-500">*</span></label>
+                            <input type="text" name="slug" id="product_slug" readonly
+                                placeholder="Ví dụ: ao-thun-nam"
+                                class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
                         </div>             
 
                         <!-- des -->
@@ -177,27 +179,7 @@
                             @endforeach
                         </div>
                     </div>
-                    <div class="card-demo flex-1 ">
-                        <h1 class="text-xl font-bold mb-3">Card demo</h1>
-                        <div class="block w-[222px] p-6 border border-gray-400 rounded-lg shadow-xs flex flex-col col-between mx-auto text-center">
-                            <a href="#">
-                                <img class="rounded-lg h-40 w-36 border border-black mx-auto " src="" alt="" />
-                            </a>
-          
-                            <a href="#">
-                                <h5 class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading overflow-hidden">
-                                    Quần Superman
-                                </h5>
-                            </a>
-                            <div class="flex flex-col mt-auto text-center mt-2">
-                                <p class=" text-body font-bold text-red-600">100.000 VNĐ </p>
-                                <button type="button"
-                                    class="btn-open-detail mt-2 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all">
-                                    Thêm vào giỏ
-                                </button>
-                            </div> 
-                        </div>
-                    </div>
+
                 </div>       
           </form> 
     </x-slot>
