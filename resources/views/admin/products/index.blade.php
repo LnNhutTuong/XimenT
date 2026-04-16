@@ -6,21 +6,25 @@
 <div class="space-y-6">
 
     {{-- Page Header --}}
-    <div class="flex items-center justify-between">
-        <div>
+    <div class="flex flex-col">
+        <div class="flex justify-between">
+            <div class="mb-2">
             <h2 class="text-2xl font-bold text-gray-800">Quản lý sản phẩm</h2>
             <p class="text-sm text-gray-500 mt-1">Tổng cộng <span class="font-semibold text-indigo-600">{{ $products->count() }}</span> sản phẩm</p>
         </div>
 
-        <div>            
-            @include('admin.products.create')        
-            <button id="open-create-product" type="button"
-                class="cursor-pointer block px-4 py-2 rounded-lg text-white 
-                text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] 
-                hover:bg-gray-300 hover:text-black transition-all">
+        <div class="mb-2">
+            <button 
+                x-data
+                @click="$dispatch('open-modal', 'create-product-modal')"
+                class="cursor-pointer block px-4 py-2 rounded-lg text-white text-sm font-medium bg-[#09090b] hover:bg-gray-800 transition-all"
+            >
                 Thêm sản phẩm
             </button>
+
+            @include('admin.products.create')
         </div>
+        
            
     </div>
 
@@ -63,27 +67,28 @@
 
         <div class="mx-4 my-4 flex gap-4">
                 @foreach($products as $product)
-            <div class="block w-[222px] p-6 border border-gray-400 rounded-lg shadow-xs flex flex-col col-between">
-                <a href="#">
-                    <img class="rounded-lg h-40 w-36 border border-black mx-auto " src="{{ asset($product->image) }}" alt="" />
-                </a>
+                <div class="block w-[222px] p-6 border border-gray-400 rounded-lg shadow-xs flex flex-col col-between">
+                    <a href="#">
+                        <img class="rounded-lg h-40 w-36 border border-black mx-auto " src="{{ asset($product->image) }}" alt="" />
+                    </a>
           
                     <a href="#">
-                        <h5 class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading overflow-hidden">{{ $product->name }}</h5>
+                         <h5 class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading overflow-hidden">{{ $product->name }}</h5>
                     </a>
-                <div class="flex flex-col mt-auto ">
-                    @if($product->is_active == 1)
-                    <p class="mb-6 text-body font-bold text-green-600">Sản phẩm đang bán </p>
-                    @else
-                    <p class="mb-6 text-body font-bold text-red-600">Sản phẩm chưa bán </p>
-                    @endif
+                    <div class="flex flex-col mt-auto ">
+                        @if($product->is_active == 1)
+                        <p class="mb-6 text-body font-bold text-green-600">Sản phẩm đang bán </p>
+                        @else
+                        <p class="mb-6 text-body font-bold text-red-600">Sản phẩm chưa bán </p>
+                        @endif
 
-                    <!--  -->
-                    <button type="button"
-                        class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all"
-                        data-target="modal-detail-product-{{ $product->id }}">
-                        Xem chi tiết
-                    </button>
+                        <!-- ád -->
+                        @include('admin.products.detail')        
+                        <button type="button"
+                            class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all"
+                            data-target="modal-detail-product-{{ $product->id }}">
+                            Xem chi tiết
+                        </button>
                 </div>          
             </div>               
             @endforeach         

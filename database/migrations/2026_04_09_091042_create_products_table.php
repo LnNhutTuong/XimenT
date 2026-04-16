@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained('product_brands')->onDelete('cascade');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('description');
+            $table->longtext('description');
             $table->decimal('base_price', 15, 2); // Giá gốc
             $table->string('image')->nullable(); // Ảnh đại diện
             $table->boolean('is_active')->default(true); // Hiện/Ẩn sản phẩm

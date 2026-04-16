@@ -1,12 +1,9 @@
 const DetailCategory = {
     init() {
-        this.initOpenButtons();
-        this.initCloseButtons();
         this.initSlugGenerator();
         this.initSizeAddition();
         this.initFormValidation();
         this.initIsEdit();
-        this.checkErrors();
     },
 
     initFormValidation() {
@@ -30,20 +27,10 @@ const DetailCategory = {
         });
     },
 
-    initOpenButtons() {
-        document.addEventListener("click", (e) => {
-            if (e.target.classList.contains("btn-open-detail")) {
-                const targetId = e.target.getAttribute("data-target");
-                const modal = document.getElementById(targetId);
-                if (modal) this.showModal(modal);
-            }
-        });
-    },
-
     initIsEdit() {
         document.addEventListener("click", (e) => {
             if (e.target.classList.contains("btn-edit-category")) {
-                const modal = e.target.closest(".modal-detail-category");
+                const modal = e.target.closest(".detail-category-modal");
 
                 const nameCategory = modal.querySelector(
                     ".category-name-input",
@@ -76,7 +63,7 @@ const DetailCategory = {
                 e.target.classList.contains("btn-cancel-edit") ||
                 e.target.classList.contains("btn-close-detail")
             ) {
-                const modal = e.target.closest(".modal-detail-category");
+                const modal = e.target.closest(".detail-category-modal");
                 if (modal) this.resetForm(modal);
             }
         });
@@ -110,19 +97,10 @@ const DetailCategory = {
         btnDelete.classList.remove("hidden");
     },
 
-    initCloseButtons() {
-        document.addEventListener("click", (e) => {
-            if (e.target.closest(".btn-close-detail")) {
-                const modal = e.target.closest(".modal-detail-category");
-                if (modal) this.hideModal(modal);
-            }
-        });
-    },
-
     initSlugGenerator() {
         document.addEventListener("input", (e) => {
             if (e.target.classList.contains("category-name-input")) {
-                const modal = e.target.closest(".modal-detail-category");
+                const modal = e.target.closest(".detail-category-modal");
                 const slugInput = modal.querySelector(".category-slug-input");
 
                 let name = e.target.value;
@@ -144,7 +122,8 @@ const DetailCategory = {
     initSizeAddition() {
         document.addEventListener("click", async (e) => {
             if (e.target.classList.contains("btn-submit-new-size")) {
-                const modal = e.target.closest(".modal-detail-category");
+                const modal = e.target.closest(".detail-category-modal");
+                const form = modal.querySelector(".category-edit-form");
                 const sizeNameInput = modal.querySelector(".size-name-input");
                 const sizeGrid = modal.querySelector(".size-checkbox-grid");
                 const submitBtn = e.target;
@@ -159,7 +138,7 @@ const DetailCategory = {
                     return;
                 }
 
-                const storeUrl = modal.getAttribute("data-sizes-store-url");
+                const storeUrl = form.getAttribute("data-sizes-store-url");
                 const csrfToken = document.querySelector(
                     'input[name="_token"]',
                 )?.value;

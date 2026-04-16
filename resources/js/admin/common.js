@@ -16,9 +16,11 @@ function filterTable(inputId, tbodyId) {
 document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("search-input")) {
         const categoryTable = document.getElementById("category-tbody");
+        const brandTable = document.getElementById("brand-tbody");
         const productTable = document.getElementById("product-tbody");
 
         if (categoryTable) filterTable("search-input", "category-tbody");
+        if (brandTable) filterTable("search-input", "brand-tbody");
         if (productTable) filterTable("search-input", "product-tbody");
     }
 });

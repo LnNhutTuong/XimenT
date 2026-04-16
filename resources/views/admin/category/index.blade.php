@@ -13,13 +13,13 @@
         </div>
 
         <div>            
-            @include('admin.category.create')        
-            <button id="open-create-category" type="button"
+            <button x-data @click="$dispatch('open-modal', 'create-category-modal', {sizes: {{ $sizes }}})"
                 class="mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white 
                 text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] 
                 hover:bg-gray-300 hover:text-black transition-all">
                 Thêm danh mục
             </button>
+            @include('admin.category.create')        
         </div>
            
     </div>
@@ -98,9 +98,8 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="category-action-container">            
                                     @include('admin.category.detail', $category)        
-                                    <button type="button"
-                                        class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all"
-                                        data-target="modal-detail-category-{{ $category->id }}">
+                                    <button x-data @click="$dispatch('open-modal', 'detail-category-modal-{{ $category->id }}')"
+                                        class="btn-open-detail mt-4 cursor-pointer mx-auto block px-4 py-2 rounded-lg text-white text-sm font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all">
                                         Xem chi tiết
                                     </button>
                                 </div> 

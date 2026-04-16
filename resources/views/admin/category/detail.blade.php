@@ -1,21 +1,13 @@
-<div id="modal-detail-category-{{ $category->id }}" 
-    class="modal-detail-category hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area">
-    <div class="fixed inset-0 p-4 flex items-center justify-center overflow-auto pointer-events-none backdrop-area">
-        <div class="modal-content w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 relative transform transition-all duration-300 scale-90 opacity-0 translate-y-4 pointer-events-auto">
-            <div class="flex items-center pb-4 border-b border-gray-100">
-                <div class="flex-1">
-                    <h3 class="text-gray-900 text-2xl font-bold">Chi tiết danh mục</h3>
-                    <p class="text-sm text-gray-500 mt-1">Xem thông tin chi tiết: <span class="font-semibold text-indigo-600">{{ $category->name }}</span></p>
-                </div>
+<div class="detail-category-modal">
+<x-my-modal name="detail-category-modal-{{ $category->id }}" maxWidth="md">
 
-                <button type="button" class="btn-close-detail p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            
-            <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="category-edit-form">
+    <x-slot name="title">
+        Chi tiết danh mục
+    </x-slot>
+
+    <x-slot name="body">
+         <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="category-edit-form"
+            data-sizes-store-url="{{ route('admin.sizes.store') }}" id="form-edit-{{ $category->id}}">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-1 gap-8 my-8">
@@ -64,29 +56,32 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="pt-6 border-t border-gray-100 flex gap-4">
-                    <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-white border border-whi hover:bg-gray-200 hover:text-gray-700 transition-all transform hover:-translate-y-0.5 transition-all"">
-                        Hủy bỏ
-                    </button>
-                    <button type="submit" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-200 transform hover:-translate-y-0.5 transition-all">
-                        Cập nhật
-                    </button>   
-                    <button type="button" class="btn-edit-category px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-white hover:text-[#09090a] border border-[#09090a] hover:bg-white hover:text-[#09090a] transition-all whitespace-nowrap transform hover:-translate-y-0.5 transition-all"">
-                        Chỉnh sửa
-                    </button>
-                    <button type="submit" form="form-delete-{{ $category->id}}" class="btn-delete-category px-8 py-3 rounded-xl text-black text-sm font-bold bg-white border border-black hover:bg-black hover:text-red-500 transform hover:-translate-y-0.5 transition-all">
-                        Xóa
-                    </button>
-                </div>            
+                </div>         
             </form>
             <form id="form-delete-{{ $category->id}}" action="{{ route('admin.categories.destroy', $category->id) }}" method="post">
                 @csrf
                 @method('DELETE')
             </form>
-        </div>
-    </div>
+    </x-slot>
+
+    <x-slot name="footer">
+        <div class="pt-6 border-t border-gray-100 flex gap-4">
+            <button type="submit" form="form-edit-{{ $category->id}}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-white hover:text-[#09090a] border border-[#09090a] hover:bg-white hover:text-[#09090a] transition-all whitespace-nowrap transform hover:-translate-y-0.5 transition-all">
+                Cập nhật
+            </button>  
+            <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-white border border-whi hover:bg-gray-200 hover:text-gray-700 transition-all transform hover:-translate-y-0.5 transition-all"">
+                Hủy bỏ
+            </button>
+            <button type="button" class="btn-edit-category px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-white hover:text-[#09090a] border border-[#09090a] hover:bg-white hover:text-[#09090a] transition-all whitespace-nowrap transform hover:-translate-y-0.5 transition-all">
+                Chỉnh sửa
+            </button>
+            <button type="submit" form="form-delete-{{ $category->id}}" class="btn-delete-category px-8 py-3 rounded-xl text-black text-sm font-bold bg-white border border-black hover:bg-black hover:text-red-500 transform hover:-translate-y-0.5 transition-all">
+                Xóa
+            </button>
+        </div>   
+    </x-slot>
+
+</x-my-modal>
 </div>
 
 @pushOnce('scripts')

@@ -11,6 +11,7 @@ class ProductVariants extends Model
         'size_id',
         'stock_quantity',
         'price',
+        'discount_price',
         'sku',
     ];
 

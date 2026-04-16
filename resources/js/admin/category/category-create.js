@@ -48,14 +48,14 @@ const CategoryCreate = {
 
     initSizeAddition() {
         const submitSizeBtn = document.getElementById("submit-new-size");
+        const form = document.getElementById("categoryForm");
         const sizeNameInput = document.getElementById("size_name");
         const sizeGrid = document.getElementById("size-checkbox-grid");
         const noSizeMessage = document.getElementById("no-size-message");
-        const modal = document.getElementById("modal-create-category");
 
-        if (!submitSizeBtn || !modal) return;
+        if (!submitSizeBtn || !form) return;
 
-        const storeUrl = modal.getAttribute("data-sizes-store-url");
+        const storeUrl = form.getAttribute("data-sizes-store-url");
         const csrfToken = document.querySelector('input[name="_token"]')?.value;
 
         submitSizeBtn.addEventListener("click", async function () {

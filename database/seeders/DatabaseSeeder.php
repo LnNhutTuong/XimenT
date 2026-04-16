@@ -94,6 +94,7 @@ class DatabaseSeeder extends Seeder
             'size_id' => $sizeM->id,
             'stock_quantity' => 50,
             'price' => null, // dùng giá base
+            'discount_price' => null, // dùng giá base
             'sku' => 'NIKE-AT-M',
         ]);
         
@@ -102,6 +103,7 @@ class DatabaseSeeder extends Seeder
             'size_id' => $sizeL->id,
             'stock_quantity' => 30,
             'price' => 550000, // Đắt hơn base một chút
+            'discount_price' => 500000, // dùng giá base
             'sku' => 'ADI-QJ-L',
         ]);
 

@@ -30,7 +30,7 @@ const BrandCreate = {
         document.addEventListener("submit", function (e) {
             if (e.target && e.target.id === "brandForm") {
                 const logo = e.target.querySelector('input[name="image"]');
-                
+
                 if (logo && logo.files.length === 0) {
                     e.preventDefault();
                     Swal.fire({

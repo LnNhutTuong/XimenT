@@ -13,15 +13,12 @@ return new class extends Migration
     {
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
-            // Liên kết với sản phẩm gốc
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            // Liên kết với kích cỡ
             $table->foreignId('size_id')->constrained()->onDelete('cascade');
-            // Thông tin quan trọng nhất: Kho hàng của riêng biến thể này
             $table->integer('stock_quantity')->default(0);      
-            // Giá riêng (Ví dụ: Size XXL đắt hơn 50k thì điền vào đây, nếu không thì dùng giá gốc của sản phẩm)
-            $table->decimal('price', 15, 2)->nullable();      
-            $table->string('sku')->unique()->nullable(); // Mã định danh sản phẩm (Ví dụ: AO-THUN-DEN-L)
+            $table->decimal('price', 15, 2)->nullable();
+            $table->decimal('discount_price', 15, 2)->nullable();      
+            $table->string('sku')->unique()->nullable();
             $table->timestamps();
         });
     }

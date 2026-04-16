@@ -40,8 +40,8 @@ const CategoryModal = {
             }, 300);
         };
 
-        window.showCategoryModal = showModal;
-        window.hideCategoryModal = hideModal;
+        window.showModalProduct = showModal;
+        window.hideModalProduct = hideModal;
 
         if (openModalBtn) openModalBtn.addEventListener("click", showModal);
 
