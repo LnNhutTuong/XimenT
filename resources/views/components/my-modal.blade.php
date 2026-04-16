@@ -1,7 +1,8 @@
-@props(['name', 'maxWidth' => '7xl'])
+@props(['name', 'maxWidth' => '7xl', 'showOnErrors' => []])
 
 <div
     x-data="{ show: false }"
+    x-init="if ({{ json_encode($showOnErrors) }}.some(bag => $errors->hasBag(bag))) show = true"
     x-show="show"
     @open-modal.window="if ($event.detail === '{{ $name }}') show = true"
     @close-modal.window="if ($event.detail === '{{ $name }}') show = false"

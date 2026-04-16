@@ -1,10 +1,14 @@
-<x-my-modal name="create-product-modal">
+<x-my-modal name="create-product-modal" :showOnErrors="['product_create']">
     <x-slot name="title">
         Thêm sản phẩm mới
     </x-slot>
 
     <x-slot name="body">
-           <form action="{{ route('admin.products.store') }}" method="POST" id="productForm" enctype="multipart/form-data">
+           <form action="{{ route('admin.products.store') }}" 
+                method="POST" 
+                id="createProductForm" 
+                enctype="multipart/form-data"
+                data-check-slug-url="{{ route('admin.products.checkSlug') }}">
                 @csrf
 
                 <div class="top flex gap-4 mt-2">
@@ -22,6 +26,7 @@
                         <!-- slug -->
                         <div>
                             <input type="text" name="slug" id="product_slug" hidden>
+
                         </div>             
 
                         <!-- des -->
@@ -84,7 +89,7 @@
                                 <div class="flex-1">
                                     <label for="discount_amount">Giá yêu thương<span class="text-red-500">*</span></label>
                                     <input type="type" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" 
-                                        disabled
+                                        readonly
                                         placeholder="Tự động tính">
                                 </div>
                             </div>
@@ -205,9 +210,26 @@
         </button>
         <button 
             type="submit" 
-            form="productForm" 
+            form="createProductForm" 
             class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all">
             Thêm sản phẩm
         </button>
     </x-slot>
 </x-my-modal>
+
+@pushOnce('scripts')
+    @vite('resources/js/admin/product/product-create.js');
+	<script>
+        CKEDITOR.replace('product_description', {
+            height: 50,
+
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic'] },
+                { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+                { name: 'insert', items: ['Image'] },
+                { name: 'tools', items: ['Maximize'] },
+                { name: 'paragraph', items: ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock']},
+            ],
+        });	
+    </script>
+@endPushOnce

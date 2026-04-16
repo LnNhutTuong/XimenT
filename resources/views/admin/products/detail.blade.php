@@ -1,28 +1,10 @@
-<div id="modal-detail-product-{{$product->id}}" 
-    class="modal-detail-product hidden fixed inset-0 z-[1000] transition-opacity duration-300 opacity-0 bg-black/50 backdrop-area">
-    <div class="fixed inset-0 p-4 flex items-center justify-center overflow-auto pointer-events-none backdrop-area">
-        <div class="modal-content w-full max-w-7xl h-[80vh] bg-white overflow-y-auto shadow-2xl rounded-2xl p-8 relative transform transition-all duration-300 scale-90 opacity-0 translate-y-4 pointer-events-auto">
-            <div class="flex items-center pb-4 border-b border-gray-100">
-                <div class="flex-1">
-                    <h3 class="text-gray-900 text-2xl font-bold">Chi tiết sản phẩm</h3>
-                    <p class="text-sm text-gray-500 mt-1">Cấu hình thông tin cơ bản cho sản phẩm</p>
-                </div>
+<x-my-modal name="detail-product-{{$product->id}}">
+    <x-slot name="title">
+        Chi tiết sản phẩm
+    </x-slot>
 
-                <button type="button" class="btn-close-modal p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                
-            </div>          
-            @if ($errors->any())
-                <div style="color:red">
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
-                </div>
-            @endif
-            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="productForm" enctype="multipart/form-data">
+    <x-slot name="body">
+          <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="productForm-{{ $product->id }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -36,18 +18,18 @@
                             <input type="text" name="name" id="product_name_{{$product->id}}" required disabled
                                 placeholder="Ví dụ: Áo thun nam"
                                 class="product-name-input w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
-                                value="{{$product->name}}">
+                                value="{{old('name', $product->name)}}">
                         </div>
                         
                         <!-- slug -->
                         <div>
-                            <input type="text" name="slug" id="product_slug_{{$product->id}}" class="product-slug-input" hidden value="{{$product->slug}}"> 
+                            <input type="text" name="slug" id="product_slug_{{$product->id}}" class="product-slug-input" hidden value="{{old('slug', $product->slug)}}"> 
                         </div>             
 
                         <!-- des -->
                          <div class="mt-4">  
                             <label for="product_description_{{$product->id}}" class="block text-sm font-semibold text-gray-700 mb-2 ">Mô tả sản phẩm <span class="text-red-500">*</span></label>
-                            <textarea name="description" id="product_description_{{$product->id}}">{{ $product->description }}</textarea>
+                            <textarea name="description" id="product_description_{{$product->id}}" disabled>{{old('description', $product->description) }}</textarea>
                         </div>  
 
                         <!-- category -->
@@ -56,7 +38,7 @@
                             <select name="product_category_id" id="product_category_id_{{$product->id}}" disabled class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50">
                                 <option value="">Chọn danh mục</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('product_category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -67,7 +49,7 @@
                             <select name="product_brand_id" id="product_brand_id_{{$product->id}}" disabled class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50">
                                 <option value="">Chọn danh mục</option>
                                 @foreach ($brands as $brand)
-                                    <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                    <option value="{{ $brand->id }}" {{ old('product_brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -75,8 +57,8 @@
                         <!-- state -->
                         <div class="mt-4">
                             <label class="block text-sm font-semibold text-gray-700 mb-2 ">Trạng thái sản phẩm <span class="text-red-500">*</span></label>
-                            <input type="radio" name="product_status" value="1" {{ $product->is_active == 1 ? 'checked' : '' }} disabled> Bán
-                            <input type="radio" name="product_status" value="0" {{ $product->is_active == 0 ? 'checked' : '' }} disabled> Ngừng bán
+                            <input type="radio" name="product_status" value="1" {{ old('product_status', $product->is_active) == 1 ? 'checked' : '' }} disabled> Bán
+                            <input type="radio" name="product_status" value="0" {{ old('product_status', $product->is_active) == 0 ? 'checked' : '' }} disabled> Ngừng bán
                         </div>                                             
                     </div>
 
@@ -96,16 +78,19 @@
                                 </div>
                             </div>
                             <div class="flex gap-4 mt-4">
+
+                                <!-- cho 1 cai function tu dong tinh thang nay dua tren sell_price and discount_amount -->
                                 <div class="flex-1">
                                     <label for="discount_percent_{{$product->id}}">Giảm giá (%)</label>
                                     <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_percent" id="discount_percent_{{$product->id}}" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
-                                        placeholder="10%" value="{{ $product->variants->first()->discount_price ?? 0 }} %">
+                                        placeholder="10%">
                                 </div>
                                 <div class="flex-1">
                                     <label for="discount_amount">Giá yêu thương<span class="text-red-500">*</span></label>
                                     <input type="type" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" 
                                         disabled
-                                        placeholder="Tự động tính">
+                                        placeholder="Tự động tính"
+                                        value="{{ number_format($product->variants->first()->discount_price ?? 0, 0, ',', '.') }} VNĐ">
                                 </div>
                             </div>
                         </div>
@@ -119,7 +104,7 @@
                                             <svg class="w-5 h-5 text-indigo-500 {{ $product->image ? 'hidden' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                                 </svg>
-                                            <img id="preview-img-{{$product->id}}" src="{{ asset($product->image) }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover {{ $product->image ? '' : 'hidden' }}">
+                                            <img id="preview-img-{{$product->id}}" src="{{ asset('storage/'.$product->image) }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover {{ $product->image ? '' : 'hidden' }}">
                                             
                                             <label for="image_{{$product->id}}" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
                                                 <span class="bg-white/90 text-indigo-700 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">Đổi ảnh</span>
@@ -144,7 +129,13 @@
                                         </label>
                                         
                                         <!-- Khu vực hiển thị xem trước ảnh chi tiết -->
-                                        <div id="gallery-preview-container" class="grid grid-cols-3 gap-2 mt-2  max-h-24 overflow-y-auto"></div>
+                                        <div id="gallery-preview-container" class="grid grid-cols-3 gap-2 mt-2  max-h-24 overflow-y-auto">
+                                            @if(is_array($product->gallery_images))
+                                                @foreach($product->gallery_images as $image)
+                                                    <img src="{{ asset('storage/'.$image) }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover {{ $image ? '' : 'hidden' }}">
+                                                @endforeach
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -243,14 +234,21 @@
                         </div>
                     </div>
                 </div>
+                    
+            </form>
+            <form id="form-delete-{{ $product->id}}" action="{{ route('admin.products.destroy', $product->id) }}" method="post">
+                @csrf
+                @method('DELETE')
+            </form>
+    </x-slot>
 
-                <!-- accept or dont -->
-                <div class="pt-6 border-t border-gray-100 flex gap-4">
-                    <button type="button" class="btn-close-modal px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
-                        Hủy bỏ
-                    </button>
-                    <button type="submit" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg shadow-indigo-100 transform hover:-translate-y-0.5 transition-all">
+    <x-slot name="footer">
+          <div class="pt-6 border-t border-gray-100 flex gap-4">
+               <button type="submit" form="productForm-{{ $product->id }}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
                         Cập nhật
+                    </button>
+                    <button type="button" class="btn-close-modal hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
+                        Hủy bỏ
                     </button>
                     <button type="button" class="btn-edit-product px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
                         Chỉnh sửa
@@ -258,16 +256,9 @@
                     <button type="submit" form="form-delete-{{ $product->id}}" class="btn-delete-product px-8 py-3 rounded-xl text-red-600 text-sm font-bold bg-red-50 border border-red-100 hover:bg-red-600 hover:text-white transition-all transform hover:-translate-y-0.5">
                         Xóa
                     </button>
-                </div>            
-            </form>
-            <form id="form-delete-{{ $product->id}}" action="{{ route('admin.products.destroy', $product->id) }}" method="post">
-                @csrf
-                @method('DELETE')
-            </form>
-            
-        </div>
-    </div>
-</div>
+                </div>      
+    </x-slot>
+</x-my-modal>
 
 @push('scripts')
     @vite(['resources/js/admin/product/product-detail.js'])

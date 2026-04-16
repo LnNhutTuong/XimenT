@@ -27,13 +27,25 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'categories', 'brands', 'productsInStock', 'productsOutOfStock', 'ProductVariants'));
     }
 
+    public function checkSlug(Request $request)
+    {
+        $slug = Str::slug($request->name);
+        $exists = Products::where('slug', $slug)->exists();
+        return response()->json([
+            'exists' => $exists,
+            'slug' => $slug
+        ]);
+    }
+
    public function store(Request $request)
     {
         $request->merge([
-            'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price),
-            'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price),
-            'discount_percent' => (int) preg_replace('/[^0-9]/', '', $request->discount_percent),
-        ]);
+            'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
+            'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price), //gia ban
+            'discount_amount' => (int) preg_replace('/[^0-9]/', '', $request->discount_amount), //gia yeu thuong
+        ]);  
+        
+        // dd($request->all());
 
         $request->validateWithBag('product_create', [
             // product
@@ -54,7 +66,12 @@ class ProductController extends Controller
             // variants
             'sizes' => 'required|array', 
             'quantities' => 'required|array',
-            'discount_percent' => 'nullable|numeric', 
+            'discount_amount' => 'nullable|numeric', 
+        ],
+        [
+            'slug.required' => 'Vui lòng nhập slug.',
+            'slug.unique'   => 'Slug đã tồn tại, vui lòng nhập slug khác.',
+            
         ]);
 
         $imagePath = '';
@@ -83,7 +100,7 @@ class ProductController extends Controller
                         'size_id' => $size_id,
                         'stock_quantity' => $quantity,
                         'price' => $request->sell_price,
-                        'discount_price' => $request->discount_percent, 
+                        'discount_price' => $request->discount_amount, 
                         'sku' => Str::upper(Str::random(8)),
                     ]);
                 }
@@ -102,6 +119,6 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.index')->with("success", "Thêm sản phẩm thành công!");   
+        return redirect()->back()->with("success", "Thêm sản phẩm thành công!");   
     }
 }

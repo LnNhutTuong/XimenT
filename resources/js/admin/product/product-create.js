@@ -1,29 +1,40 @@
 const ProductCreate = {
     init() {
-        this.initSlugGenerator();
-        this.initFormValidation();
-        this.initSizeWithCategory();
-        this.initGiaYeuThuong();
-        this.initPreviewProfile();
-        this.initPreviewGallery();
-        this.initCKEditor();
+        const container = document.getElementById("createProductForm");
+        if (!container) return;
+
+        this.initSlugGenerator(container);
+        this.initFormValidation(container);
+        this.initSizeWithCategory(container);
+        this.initGiaYeuThuong(container);
+        this.initPreviewProfile(container);
+        this.initPreviewGallery(container);
     },
-    initPreviewGallery() {
+
+    initPreviewGallery(container) {
         let filesArray = [];
-        const imageInput = document.getElementById("gallery_images");
-        const previewContainer = document.getElementById(
-            "gallery-preview-container",
+        const imageInput = container.querySelector("#gallery_images");
+        const previewContainer = container.querySelector(
+            "#gallery-preview-container",
         );
+
+        //cai nay dung cho viec co the chon trung anh
+        const syncFilesToInput = () => {
+            const dataTransfer = new DataTransfer();
+            filesArray.forEach((file) => dataTransfer.items.add(file));
+            imageInput.files = dataTransfer.files;
+        };
 
         if (imageInput) {
             imageInput.addEventListener("change", (e) => {
                 const files = Array.from(e.target.files);
 
-                files.forEach((file) => filesArray.push(file));
+                files.forEach((file) => {
+                    filesArray.push(file);
+                });
 
                 renderPreviewGallery();
-
-                imageInput.value = "";
+                syncFilesToInput();
             });
         }
 
@@ -50,6 +61,7 @@ const ProductCreate = {
                         () => {
                             filesArray.splice(index, 1);
                             renderPreviewGallery();
+                            syncFilesToInput();
                         },
                     );
 
@@ -61,10 +73,10 @@ const ProductCreate = {
         };
     },
 
-    initPreviewProfile() {
-        const imageInput = document.getElementById("image");
-        const imagePreview = document.getElementById("preview-img");
-        const imagePlaceHolder = document.getElementById("image-placeholder");
+    initPreviewProfile(container) {
+        const imageInput = container.querySelector("#image");
+        const imagePreview = container.querySelector("#preview-img");
+        const imagePlaceHolder = container.querySelector("#image-placeholder");
 
         if (imageInput) {
             imageInput.addEventListener("change", (e) => {
@@ -85,11 +97,11 @@ const ProductCreate = {
         }
     },
 
-    initGiaYeuThuong() {
-        const basePrice = document.getElementById("base_price");
-        const sellPrice = document.getElementById("sell_price");
-        const discountPercent = document.getElementById("discount_percent");
-        const discountAmount = document.getElementById("discount_amount");
+    initGiaYeuThuong(container) {
+        const basePrice = container.querySelector("#base_price");
+        const sellPrice = container.querySelector("#sell_price");
+        const discountPercent = container.querySelector("#discount_percent");
+        const discountAmount = container.querySelector("#discount_amount");
 
         if (!sellPrice || !discountPercent || !discountAmount) return;
 
@@ -151,9 +163,9 @@ const ProductCreate = {
         });
     },
 
-    initSizeWithCategory() {
-        const categorySelect = document.getElementById("product_category_id");
-        const variantsContainer = document.getElementById("variants");
+    initSizeWithCategory(container) {
+        const categorySelect = container.querySelector("#product_category_id");
+        const variantsContainer = container.querySelector("#variants");
 
         let currentOptionSize = `<option value="">Chọn kích thước</option>`;
         let previousCategoryValue = categorySelect ? categorySelect.value : "";
@@ -216,7 +228,7 @@ const ProductCreate = {
         };
 
         const updateAllSizeSelect = () => {
-            const sizeSelects = document.querySelectorAll(".size-select");
+            const sizeSelects = container.querySelectorAll(".size-select");
             sizeSelects.forEach((select) => {
                 const selectValue = select.value;
                 select.innerHTML = currentOptionSize;
@@ -245,7 +257,7 @@ const ProductCreate = {
         };
 
         const updateAvailableSizes = () => {
-            const allSelects = document.querySelectorAll(".size-select");
+            const allSelects = container.querySelectorAll(".size-select");
 
             const selectedSizes = Array.from(allSelects)
                 .map((select) => select.value)
@@ -281,7 +293,7 @@ const ProductCreate = {
             variantsContainer.addEventListener("click", (e) => {
                 if (e.target.closest(".btn-add-variant")) {
                     const firstSelect =
-                        document.querySelectorAll(".size-select")[0];
+                        container.querySelectorAll(".size-select")[0];
                     if (!firstSelect) return;
 
                     const availableOptionsCount = firstSelect.querySelectorAll(
@@ -341,20 +353,18 @@ const ProductCreate = {
                 }
             });
         }
+
+        // Khởi tạo giá trị ban đầu nếu đã có category được chọn
+        if (categorySelect && categorySelect.value) {
+            processCategoryChange(categorySelect.value);
+        }
     },
 
-    initFormValidation() {
-        const form = document.getElementById("productForm");
-        if (!form) return;
+    initFormValidation(container) {
+        const form = container;
 
-        form.addEventListener("submit", function (e) {
-            // ò fin
-            // const name = form.querySelector("input[name='name']");
-            // if (!name || name.value.trim() === "") {
-            //     e.preventDefault();
-            //     return showError("Vui lòng nhập tên sản phẩm.");
-            // }
-
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
             if (typeof CKEDITOR !== "undefined") {
                 for (let instance in CKEDITOR.instances) {
                     CKEDITOR.instances[instance].updateElement();
@@ -391,23 +401,33 @@ const ProductCreate = {
                 return showError("Vui lòng chọn trạng thái sản phẩm.");
             }
 
-            //rice
+            // Validate Prices
             const basePrice = form.querySelector("input[name='base_price']");
-            if (!basePrice.value.trim()) {
+            if (!basePrice || !basePrice.value.trim()) {
                 e.preventDefault();
-                return showError("Vui lòng nhập gián nhập");
+                return showError("Vui lòng nhập giá nhập.");
             }
 
             const sellPrice = form.querySelector("input[name='sell_price']");
-            if (!sellPrice) {
+            if (!sellPrice || !sellPrice.value.trim()) {
                 e.preventDefault();
-                return showError("Vui lòng nhập gián bán");
+                return showError("Vui lòng nhập giá bán.");
             }
 
             const imageProduct = form.querySelector("input[name='image']");
             if (!imageProduct || imageProduct.files.length === 0) {
                 e.preventDefault();
                 return showError("Vui lòng chọn ảnh đại diện cho sản phẩm.");
+            }
+
+            const galleryImages = form.querySelector(
+                "input[name='gallery_images[]']",
+            );
+            if (galleryImages && galleryImages.files.length > 5) {
+                e.preventDefault();
+                return showError(
+                    "Vui lòng chọn tối đa 5 ảnh chi tiết cho sản phẩm.",
+                );
             }
 
             const selectSizes = form.querySelectorAll('select[name="sizes[]"]');
@@ -436,6 +456,47 @@ const ProductCreate = {
                 return showError("Vui lòng nhập số lượng cho phân loại.");
             }
 
+            //check slug rat nhuc dau, toi da qua met vi cai nay
+            // cai nay ko co cach nao check duoc ngoai bang API
+            const productName = form.querySelector("#product_name").value;
+            const csrfToken = form.querySelector('input[name="_token"]').value;
+
+            const checkSlugUrl =
+                form.dataset.checkSlugUrl || "/admin/products/check-slug";
+
+            try {
+                const response = await fetch(checkSlugUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify({ name: productName }),
+                });
+
+                const data = await response.json();
+
+                if (data.exists) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Tên sản phẩm trùng lặp",
+                        text: "Tên sản phẩm này sinh ra đường dẫn (slug) đã tồn tại trong hệ thống. Vui lòng đổi tên khác.",
+                        confirmButtonColor: "#000000ff",
+                    });
+                    return;
+                }
+                form.submit();
+            } catch (error) {
+                console.error("Lỗi khi kiểm tra slug:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi kết nối",
+                    text: "Không thể kiểm tra dữ liệu lúc này. Vui lòng thử lại.",
+                    confirmButtonColor: "#000000ff",
+                });
+            }
+
             function showError(message) {
                 Swal.fire({
                     icon: "warning",
@@ -447,9 +508,9 @@ const ProductCreate = {
         });
     },
 
-    initSlugGenerator() {
-        const nameInput = document.getElementById("product_name");
-        const slugInput = document.getElementById("product_slug");
+    initSlugGenerator(container) {
+        const nameInput = container.querySelector("#product_name");
+        const slugInput = container.querySelector("#product_slug");
         if (!nameInput || !slugInput) return;
 
         nameInput.addEventListener("input", function () {

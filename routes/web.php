@@ -51,6 +51,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 
     //Quan ly san pham
     Route::resource('products', ProductController::class);
-
+    Route::post('/products/check-slug', [ProductController::class, 'checkSlug'])->name('products.checkSlug');
 });
     
