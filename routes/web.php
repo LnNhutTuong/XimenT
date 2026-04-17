@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CustomerController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -52,5 +54,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     //Quan ly san pham
     Route::resource('products', ProductController::class);
     Route::post('/products/check-slug', [ProductController::class, 'checkSlug'])->name('products.checkSlug');
+
+    //Quan ly khach hang
+    Route::resource('customers', CustomerController::class);
 });
     

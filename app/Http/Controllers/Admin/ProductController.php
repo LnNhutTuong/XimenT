@@ -160,6 +160,8 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('products', 'public');
         }
 
+        $hasOrder = $product->variants()->whereHas('order_details')->exists();
+
         $product->update([
             'category_id' => $request->product_category_id,
             'brand_id' => $request->product_brand_id,
@@ -168,7 +170,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'base_price' => $request->base_price,
             'image' => $imagePath,
-            'is_active' => $request->product_status,
+            'is_active' => $hasOrder ? $product->is_active : $request->product_status,
         ]);
 
 
@@ -213,8 +215,19 @@ class ProductController extends Controller
         if($hasOrder){
             return redirect()->back()->with("error", "Sản phẩm đã có đơn hàng không thể xóa!");   
         }
+
         $product->variants()->delete();
-        $product->images()->delete();
+
+        if($product->image){
+            Storage::disk('public')->delete($product->image);
+        }
+        if($product->images()->exists()){
+            foreach($product->images() as $image){
+                Storage::disk('public')->delete($image->image_path);
+            }
+            $product->images()->delete();
+        }
+
         $product->delete();
         return redirect()->back()->with("success", "Xóa sản phẩm thành công!");   
     }

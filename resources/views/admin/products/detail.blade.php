@@ -58,8 +58,21 @@
                         <!-- state -->
                         <div class="mt-4">
                             <label class="block text-sm font-semibold text-gray-700 mb-2 ">Trạng thái sản phẩm <span class="text-red-500">*</span></label>
-                            <input type="radio" name="product_status" value="1" {{ old('product_status', $product->is_active) == 1 ? 'checked' : '' }} disabled> Bán
-                            <input type="radio" name="product_status" value="0" {{ old('product_status', $product->is_active) == 0 ? 'checked' : '' }} disabled> Ngừng bán
+                            @php
+                                $hasOrder = $product->variants()->whereHas('order_details')->exists();
+                            @endphp
+                            <div class="{{ $hasOrder ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                <input type="radio" name="product_status" value="1" 
+                                    {{ old('product_status', $product->is_active) == 1 ? 'checked' : '' }} 
+                                    {{ $hasOrder ? 'disabled' : '' }}> Bán
+                                    
+                                <input type="radio" name="product_status" value="0" 
+                                    {{ old('product_status', $product->is_active) == 0 ? 'checked' : '' }} 
+                                    {{ $hasOrder ? 'disabled' : '' }}> Ngừng bán
+                            </div>
+                            @if($hasOrder)
+                                <p class="text-[10px] text-red-500 mt-1 italic">* Sản phẩm đã có đơn hàng, không thể thay đổi trạng thái.</p>
+                            @endif  
                         </div>                                             
                     </div>
 
@@ -69,11 +82,11 @@
                             <div class="flex gap-4 mt-2">
                                 <div class="flex-1">
                                     <label for="base_price_{{$product->id}}">Giá nhập <span class="text-red-500">*</span></label>
-                                    <input type="text" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="base_price" id="base_price_{{$product->id}}" class="base-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50" placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->base_price, 0, ',', '.') }} VNĐ">
+                                    <input type="text" readonly onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="base_price" id="base_price_{{$product->id}}" class="base-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50" placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->base_price, 0, ',', '.') }} VNĐ">
                                 </div>
                                 <div class="flex-1">
                                     <label for="sell_price_{{$product->id}}">Giá bán <span class="text-red-500">*</span></label>
-                                    <input type="type" disabled onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="sell_price" id="sell_price_{{$product->id}}" class="sell-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
+                                    <input type="text" readonly onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="sell_price" id="sell_price_{{$product->id}}" class="sell-price w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50"
                                         placeholder="Ví dụ: 999.000 VNĐ" value="{{ number_format($product->variants->first()->price ?? 0, 0, ',', '.') }} VNĐ">
                                         
                                 </div>
@@ -88,8 +101,8 @@
                                 </div>
                                 <div class="flex-1">
                                     <label for="discount_amount">Giá yêu thương<span class="text-red-500">*</span></label>
-                                    <input type="type" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount_{{$product->id}}" class="discount-amount w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" 
-                                        disabled
+                                    <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" name="discount_amount" id="discount_amount_{{$product->id}}" class="discount-amount w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm bg-gray-50" 
+                                        readonly
                                         placeholder="Tự động tính"
                                         value="{{ number_format($product->variants->first()->discount_price ?? 0, 0, ',', '.') }} VNĐ">
                                 </div>
@@ -103,15 +116,13 @@
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Hình đại diện <span class="text-red-500">*</span></label>
                                         <div class="relative w-full aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center bg-gray-50 flex-shrink-0 group overflow-hidden">
                                             <svg class="image-placeholder w-5 h-5 text-indigo-500 {{ $product->image ? 'hidden' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                             </svg>
 
                                             <img id="preview-img-{{$product->id}}" src="{{ asset('storage/'.$product->image) }}" alt="Preview" class="product-image-preview absolute inset-0 w-full h-full object-cover {{ $product->image ? '' : 'hidden' }}">
-                                            
                                             <label for="image_{{$product->id}}" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
                                                 <span class="bg-white/90 text-indigo-700 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">Đổi ảnh</span>
                                             </label>
-
                                         </div>
 
                                         <input type="file" id="image_{{$product->id}}" name="image" class="product-image-input hidden" accept="image/*" disabled>
@@ -120,7 +131,7 @@
 
                                     <div class="w-2/3 flex flex-col ">
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Ảnh chi tiết (Album)</label>
-                                        <label for="gallery_images" class="flex-1 border-2 border-dashed border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 hover:border-indigo-300 transition-colors cursor-pointer group">
+                                        <label for="gallery_images_{{$product->id}}" id="gallery-label-{{$product->id}}" class="gallery-label flex-1 border-2 border-dashed border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 hover:border-indigo-300 transition-colors cursor-not-allowed pointer-events-none opacity-60 group">
                                             <div class="p-2 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform mb-2">
                                                 <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -128,11 +139,11 @@
                                             </div>
                                             <p class="text-sm font-medium text-indigo-600 mb-1">Tải lên nhiều ảnh</p>
                                             <p class="text-[11px] text-gray-400 text-center">Hỗ trợ JPG, PNG, WEBP.</p>
-                                            <input type="file" id="gallery_images" name="gallery_images[]" multiple class="hidden" accept="image/*">
+                                            <input type="file" id="gallery_images_{{$product->id}}" name="gallery_images[]" multiple class="hidden" accept="image/*" disabled>
                                         </label>
                                         
                                         <!-- Khu vực hiển thị xem trước ảnh chi tiết -->
-                                       <div id="gallery-preview-container" class="grid grid-cols-3 gap-2 mt-2 max-h-24 overflow-y-auto">
+                                       <div id="gallery-preview-container-{{$product->id}}" class="grid grid-cols-3 gap-2 mt-2 max-h-24 overflow-y-auto">
                                             @if($product->images->isNotEmpty()) 
                                                 @foreach($product->images as $image)
                                                     <div class="relative w-24 h-24"> 

@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Orders extends Model
 {
     protected $fillable = [
+        'customer_id',
         'user_id',
-        'customer_name',
-        'customer_email',
-        'customer_phone',
-        'shipping_address',
         'total_amount',
         'status',
+        'phone',
+        'address',
+        'note',
     ];
 
     // 1 Đơn hàng có nhiều Chi tiết đơn hàng
@@ -26,5 +26,11 @@ class Orders extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // 1 Đơn hàng thuộc 1 Khách hàng (bắt buộc)
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

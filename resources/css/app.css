@@ -24,7 +24,7 @@ html {
 }
 
 /* Button */
-@layer components {
+@layer {
     .title {
         font-family: "Shadows Into Light", cursive;
         @apply text-6xl text-center;

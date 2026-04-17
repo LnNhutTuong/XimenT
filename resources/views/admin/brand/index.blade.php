@@ -67,19 +67,19 @@
                 <table class="w-full text-sm text-left rtl:text-right text-body">
                     <thead class="text-sm text-body bg-gray-50 border-b rounded-base border-default text-center">
                         <tr>
-                            <th scope="col" class="px-6 py-3 font-medium">
+                            <th scope="col" class="px-6 py-3 text-xl font-bold text-center">
                                 ID
                             </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
+                            <th scope="col" class="px-6 py-3 text-xl font-bold text-center">
                                 Logo
                             </th>
-                            <th scope="col" class="px-6 py-3 font-medium">
+                            <th scope="col" class="px-6 py-3 text-xl font-bold text-center">
                                 Tên thương hiệu
                             </th>                   
-                            <th scope="col" class="px-6 py-3 font-medium">
+                            <th scope="col" class="px-6 py-3 text-xl font-bold text-center">
                                 Số lượng sản phẩm
                             </th>
-                            <th scope="col" class="px-6 py-3 font-medium ">
+                            <th scope="col" class="px-6 py-3 text-xl font-bold text-center">
                                 Hành động
                             </th>
                             
@@ -88,16 +88,16 @@
                     <tbody id="brand-tbody">
                       @foreach ($brands as $brand)
                         <tr class="bg-neutral-primary border-b border-default">
-                            <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
+                            <th scope="row" class="px-6 py-4 text-md font-bold text-center text-heading whitespace-nowrap text-center">
                                 {{ $brand->id }}
                             </th>
-                             <td class="px-6 py-4 ">
+                             <td class="px-6 py-4 text-md font-bold text-center">
                                 <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{$brand->name}}" class=" w-14 h-14 object-cover mx-auto border border-dashed border-gray-500">
                             </td>   
-                             <td class="px-6 py-4 ">
+                             <td class="px-6 py-4 text-md font-bold text-center">
                                 {{ $brand->name }}
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-4 text-md font-bold text-center">
                                 {{ $products->where('brand_id', $brand->id)->count() }}
                             </td>
 
@@ -116,10 +116,8 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
-</div>
 
 
 @endsection

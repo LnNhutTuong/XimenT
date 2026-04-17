@@ -81,7 +81,22 @@
                 @endif
             @endif
         </div>
-    </x-slot>
+
+        <!-- Phone -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="phone" value="Số điện thoại" />
+            <x-input id="phone" type="text" class="mt-1 block w-full" wire:model="state.phone" />
+            <x-input-error for="phone" class="mt-2" />
+        </div>
+
+        <!-- Address -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="address" value="Địa chỉ" />
+            <textarea id="address" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" wire:model="state.address"></textarea>
+            <x-input-error for="address" class="mt-2" />
+        </div>    
+        
+        </x-slot>
 
     <x-slot name="actions">
         <x-action-message class="me-3" on="saved">

@@ -22,9 +22,9 @@
     <main class="min-h-screen">
         <div class="flex justify-end">
             <a href="{{route('home')}}" class=" btn-base btn-black" ">
-            <span class="btn-text "> <-- Trở về trang chủ</span>
-            <span class="btn-underline"></span>
-        </a>
+                <span class="btn-text "> <-- Trở về trang chủ</span>
+                <span class="btn-underline"></span>
+            </a>
         </div>
         
         {{ $slot }}

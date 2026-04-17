@@ -33,6 +33,8 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_photo_path',
+        'phone',
+        'address',
     ];
 
     /**
@@ -54,6 +56,8 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'phone',
+        'address',
     ];
 
     /**
@@ -69,6 +73,17 @@ class User extends Authenticatable
         ];
     }
 
+    // Lái số điện thọi
+    public function getPhoneAttribute(){
+        return $this->customer?->phone;
+    }
+    
+    //Lái địa chỉ
+    public function getAddressAttribute(){
+        return $this->customer?->address;
+    }
+
+
     /**
      * Kiểm tra xem người dùng có phải là Admin không.
      */
@@ -83,5 +98,13 @@ class User extends Authenticatable
     public function isUser(): bool
     {
         return $this->role === 'user';
+    }
+
+    /**
+     * Lấy thông tin khách hàng liên kết với user này.
+     */
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
     }
 }

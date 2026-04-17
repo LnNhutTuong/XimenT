@@ -10,6 +10,7 @@ use App\Models\Sizes;
 use App\Models\ProductVariants;
 use App\Models\Orders;
 use App\Models\OrderDetails;
+use App\Models\Customer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,11 +29,28 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        $customer = User::create([
+        $userCustomer = User::create([
             'name' => 'Khách hàng Demo',
             'email' => 'khachhang@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'user',
+        ]);
+
+        $customer1 = Customer::create([
+            'user_id' => $userCustomer->id,
+            'name' => $userCustomer->name,
+            'email' => $userCustomer->email,
+            'phone' => '0987654321',
+            'address' => '123 Đường Nam Kỳ Khởi Nghĩa, Quận 1, TP HCM',
+        ]);
+
+        // Khách hàng mua không cần đăng nhập (Guest)
+        $guestCustomer = Customer::create([
+            'user_id' => null,
+            'name' => 'Khách Vãng Lai',
+            'email' => 'guest@example.com',
+            'phone' => '0123456789',
+            'address' => '456 Lê Lợi, Bến Nghé, Quận 1, TP HCM',
         ]);
 
         // 2. Tạo Category
@@ -107,14 +125,26 @@ class DatabaseSeeder extends Seeder
             'sku' => 'ADI-QJ-L',
         ]);
 
-        // 7. Tạo Order
+        // 7. Tạo Order cho Khách hàng có tài khoản
         $order = Orders::create([
-            'user_id' => $customer->id,
+            'customer_id' => $customer1->id,
+            'user_id' => $userCustomer->id,
             'total_amount' => 900000,
             'status' => 'pending',
-            'phone' => '0987654321',
-            'address' => '123 Đường Nam Kỳ Khởi Nghĩa, Quận 1, TP HCM',
+            'phone' => $customer1->phone,
+            'address' => $customer1->address,
             'note' => 'Giao hàng sau 5h chiều',
+        ]);
+
+        // Tạo Order cho Khách vãng lai
+        $guestOrder = Orders::create([
+            'customer_id' => $guestCustomer->id,
+            'user_id' => null,
+            'total_amount' => 350000,
+            'status' => 'processing',
+            'phone' => $guestCustomer->phone,
+            'address' => $guestCustomer->address,
+            'note' => 'Gọi điện trước khi giao',
         ]);
 
         // 8. Tạo Order Details
@@ -130,6 +160,13 @@ class DatabaseSeeder extends Seeder
             'product_variant_id' => $variant2->id,
             'quantity' => 1,
             'price' => 550000,
+        ]);
+
+        OrderDetails::create([
+            'order_id' => $guestOrder->id,
+            'product_variant_id' => $variant1->id,
+            'quantity' => 1,
+            'price' => 350000,
         ]);
     }
 }

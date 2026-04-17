@@ -10,19 +10,10 @@
                 <span class="btn-text">Sản phẩm</span>
                 <span class="btn-underline"></span>
             </x-nav-link>
-
-            @auth
-                @if(auth()->user()->isAdmin())
-                    <x-nav-link :href="route('admin.dashboard')" class="btn-base btn-black">
-                        <span class="btn-text" style="color: red;">Quản trị</span>
-                        <span class="btn-underline"></span>
-                    </x-nav-link>
-                @endif
-            @endauth
         </ul>
 
         <div class="title">
-            XimenT  
+            <a href="{{ route('home') }}">XimenT</a>  
         </div>
 
         <div class="flex justify-end">
@@ -40,21 +31,55 @@
                         <span class="btn-underline"></span>
                     </a>
                 @else
-                    {{-- Đã đăng nhập: hiện tên và nút Đăng xuất --}}
-                    <a href="{{ route('dashboard') }}" class="btn-base btn-black">
-                        <span class="btn-text">{{ auth()->user()->name }}</span>
-                        <span class="btn-underline"></span>
-                    </a>
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button type="button" class="btn-base btn-black flex items-center focus:outline-none transition border-none bg-transparent cursor-pointer">
+                                <span class="btn-text">Xin chào, {{ Auth::user()->name }}</span>
+                                <svg class="ms-2 size-4 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                                <span class="btn-underline"></span>
+                            </button>
+                        </x-slot>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn-base btn-black">
-                            <span class="btn-text">Đăng xuất</span>
-                            <span class="btn-underline"></span>
-                        </button>
-                    </form>
+                        <x-slot name="content">
+                            <div class="flex flex-col p-1 space-y-1">
+                                <!-- Quản trị (Dành cho Admin) -->
+                                @auth
+                                    @if(auth()->user()->isAdmin())
+                                        <x-dropdown-link href="{{ route('admin.dashboard') }}" class="!p-0 hover:!bg-transparent">
+                                            <div class="btn-base btn-black w-full justify-start !mt-0">
+                                                <span class="btn-text text-red-500">Quản trị</span>
+                                                <span class="btn-underline bg-red-500"></span>
+                                            </div>
+                                        </x-dropdown-link>
+                                    @endif
+                                @endauth
+
+                                <!-- Hồ sơ cá nhân -->
+                                <x-dropdown-link href="{{ route('profile.show') }}" class="!p-0 hover:!bg-transparent">
+                                    <div class="btn-base btn-black w-full justify-start !mt-0">
+                                        <span class="btn-text">Hồ sơ cá nhân</span>
+                                        <span class="btn-underline"></span>
+                                    </div>
+                                </x-dropdown-link>
+
+                                <div class="border-t border-gray-100 my-1"></div>
+
+                                <!-- Đăng xuất -->
+                                <form method="POST" action="{{ route('logout') }}" x-data>
+                                    @csrf
+                                    <x-dropdown-link href="{{ route('logout') }}" @click.prevent="$root.submit();" class="!p-0 hover:!bg-transparent">
+                                        <div class="btn-base btn-black w-full justify-start !mt-0">
+                                            <span class="btn-text">Đăng xuất</span>
+                                            <span class="btn-underline"></span>
+                                        </div>
+                                    </x-dropdown-link>
+                                </form>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
                 @endguest
-
             </div>
         </div>
     </nav>

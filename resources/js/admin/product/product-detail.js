@@ -18,10 +18,12 @@ const ProductDetail = {
 
     initPreviewGallery(container) {
         let filesArray = [];
-        const imageInput = container.querySelector("#gallery_images");
-        const previewContainer = container.querySelector(
-            "#gallery-preview-container",
+        const imageInput = container.querySelector(
+            "input[name='gallery_images[]']",
         );
+        const previewContainer = container
+            .closest(".detail-product-modal")
+            .querySelector("[id^='gallery-preview-container-']");
 
         //cai nay dung cho viec co the chon trung anh
         const syncFilesToInput = () => {
@@ -119,12 +121,33 @@ const ProductDetail = {
                         .forEach((input) => {
                             if (
                                 !input.classList.contains("discount-amount") &&
+                                !input.classList.contains("base-price") &&
+                                !input.classList.contains("sell-price") &&
                                 !input.id.includes("slug")
                             ) {
                                 input.disabled = false;
                                 input.classList.remove("bg-gray-50");
                             }
                         });
+
+                    // Bỏ readonly cho price inputs để có thể chỉnh sửa
+                    modal
+                        .querySelectorAll(".base-price, .sell-price")
+                        .forEach((input) => {
+                            input.removeAttribute("readonly");
+                            input.classList.remove("bg-gray-50");
+                        });
+
+                    // Enable gallery label
+                    const galleryLabel = modal.querySelector(".gallery-label");
+                    if (galleryLabel) {
+                        galleryLabel.classList.remove(
+                            "pointer-events-none",
+                            "cursor-not-allowed",
+                            "opacity-60",
+                        );
+                        galleryLabel.classList.add("cursor-pointer");
+                    }
 
                     const descriptionTextarea = modal.querySelector(
                         "textarea[name='description']",
@@ -176,12 +199,46 @@ const ProductDetail = {
 
                     form.reset();
 
+                    const imageLabel = modal.querySelector(
+                        ".change-image-label",
+                    );
+                    if (imageLabel) {
+                        imageLabel.classList.add("pointer-events-none");
+                    }
+
                     modal
                         .querySelectorAll("input, select, textarea")
                         .forEach((input) => {
-                            input.disabled = true;
+                            // Không disable price inputs (chúng dùng readonly)
+                            if (
+                                !input.classList.contains("base-price") &&
+                                !input.classList.contains("sell-price") &&
+                                !input.classList.contains("discount-amount")
+                            ) {
+                                input.disabled = true;
+                            }
                             input.classList.add("bg-gray-50");
                         });
+
+                    // Restore readonly cho price inputs
+                    modal
+                        .querySelectorAll(
+                            ".base-price, .sell-price, .discount-amount",
+                        )
+                        .forEach((input) => {
+                            input.setAttribute("readonly", true);
+                        });
+
+                    // Disable gallery label
+                    const galleryLabel = modal.querySelector(".gallery-label");
+                    if (galleryLabel) {
+                        galleryLabel.classList.add(
+                            "pointer-events-none",
+                            "cursor-not-allowed",
+                            "opacity-60",
+                        );
+                        galleryLabel.classList.remove("cursor-pointer");
+                    }
 
                     //cái này chịu thua =))
                     const descriptionTextarea = modal.querySelector(

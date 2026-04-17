@@ -9,27 +9,29 @@
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="bg-gray-100 h-screen overflow-hidden">
     {{-- Sidebar --}}
     @include('admin.layouts.sidebar')
 
-    {{-- Main content area (offset by sidebar width) --}}
-    <main class="flex-grow flex flex-col ml-[260px]">
+    {{-- Main content area --}}
+    <main class="ml-[260px] h-screen flex flex-col">
         {{-- Header --}}
         @include('admin.layouts.header')
 
-        {{-- Page Content --}}
-        <section class="p-8 flex-grow">
+        {{-- Page Content (Scrollable) --}}
+        <div class="flex-grow overflow-y-auto p-8">
             @yield('content')
-        </section>
+        </div>
+
+        {{-- Footer --}}
         @include('admin.layouts.footer')
     </main>
-
     @vite('resources/js/admin/common.js')
     @stack('scripts')
 
@@ -61,5 +63,4 @@
         });
     </script>
 </body>
-
 </html>

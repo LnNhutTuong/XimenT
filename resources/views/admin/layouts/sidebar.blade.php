@@ -6,8 +6,7 @@
             <span class="h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-gray-900 block absolute bottom-0 right-0"></span>
         </div>
         <div class="ml-4 truncate">
-            <p class="text-[15px] font-bold text-white tracking-wide truncate">{{ auth()->user()->name ?? 'Administrator' }}</p>
-            <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-[0.15em] font-semibold">Admin Panel</p>
+            <p class="text-xl font-bold text-white tracking-wide truncate">{{ auth()->user()->name ?? 'Administrator' }}</p>
         </div>
     </div>
 
@@ -70,7 +69,7 @@
     <ul class="space-y-2">
         <h6 class="text-[10px] uppercase font-extrabold text-gray-500 px-4 mt-8 mb-3 tracking-[0.15em]">Kinh doanh</h6>
         <li>
-            <a href="javascript:void(0)" class="group text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300 text-[14px] flex items-center rounded-xl px-4 py-3">
+            <a href="{{ route('admin.customers.index') }}" class="group text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300 text-[14px] flex items-center rounded-xl px-4 py-3">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-[18px] h-[18px] mr-3 transition-transform group-hover:scale-110">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                 </svg>
