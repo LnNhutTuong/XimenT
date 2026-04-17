@@ -17,7 +17,7 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-])->group(function () {
+])->middleware('check.account.status')->group(function () {
     Route::get('/dashboard', function () {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
@@ -32,7 +32,6 @@ Route::middleware([
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product', [HomeController::class, 'products'])->name('product');
 Route::get('/product/{slug}', [HomeController::class, 'productDetail'])->name('product.detail');
-
 
 // ==========================================
 // 2. TRANG ADMIN (Cho quản trị)

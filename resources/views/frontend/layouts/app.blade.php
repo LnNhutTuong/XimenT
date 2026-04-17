@@ -18,4 +18,6 @@
     @include('frontend.layouts.footer')
     @livewireScripts
 </body>
+
+ 
 </html>

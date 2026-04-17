@@ -48,7 +48,7 @@ html {
     }
 
     .btn-underline {
-        @apply absolute bottom-1 left-1/2 w-0 h-[1px] -translate-x-1/2 transition-all duration-300 ease-out bg-current;
+        @apply absolute bottom-1 w-0 h-[1px] -translate-x-1/2 transition-all duration-300 ease-out bg-current;
     }
 
     .btn-text {

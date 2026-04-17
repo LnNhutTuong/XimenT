@@ -35,6 +35,7 @@ class User extends Authenticatable
         'profile_photo_path',
         'phone',
         'address',
+        'status',
     ];
 
     /**
@@ -70,6 +71,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'boolean',
         ];
     }
 
@@ -106,5 +108,10 @@ class User extends Authenticatable
     public function customer()
     {
         return $this->hasOne(Customer::class);
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Orders::class);
     }
 }
