@@ -14,6 +14,11 @@ class Orders extends Model
         'phone',
         'address',
         'note',
+        'order_date',
+    ];
+
+    protected $casts = [
+        'order_date' => 'datetime',
     ];
 
     // 1 Đơn hàng có nhiều Chi tiết đơn hàng

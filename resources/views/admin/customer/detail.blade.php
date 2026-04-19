@@ -6,7 +6,10 @@
         <div>
             @php
                 if($customer->user_id){
-                    echo "<span class='text-sm text-green-500'>Có tài khoản</span>";
+                    echo "<span class='text-sm text-green-500'>
+                        Có tài khoản: 
+                            " . ($customer->user->status == 1 ? "<span class='text-md text-green-500 uppercase tracking-wider font-semibold'>Hoạt động</span>" : "<span class='text-md text-red-500 uppercase tracking-wider font-semibold'>Bị khóa</span>") . "
+                    </span>";
                 }else{
                     echo "<span class='text-sm text-red-500'>Khách vãng lai</span>";
                 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,5 +57,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 
     //Quan ly khach hang
     Route::resource('customers', CustomerController::class);
+
+    //QUan ly don hang
+    Route::resource('orders', OrderController::class);
 });
     

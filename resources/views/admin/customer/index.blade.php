@@ -20,13 +20,20 @@
             <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Tổng khách hàng</p>
             <p class="text-3xl font-bold text-gray-800 mt-2">{{ $customers->count() }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100">
-            <p class="text-xs text-green-500 uppercase tracking-wider font-semibold">Khách hàng có tài khoản</p>
-            <p class="text-3xl font-bold text-green-600 mt-2">{{ $customers->whereNotNull('user_id')->count(); }}</p>
+        <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 flex gap-4">
+            <div class="flex flex-col justify-start flex-1">
+                <p class="text-xs text-green-500 uppercase tracking-wider font-semibold">Khách hàng có tài khoản</p>
+                <p class="text-3xl font-bold text-green-600 mt-2">{{ $customers->whereNotNull('user_id')->count(); }}</p>
+            </div>
+            <div class="flex flex-col mt-4">
+                <p class="text-md text-green-500 uppercase tracking-wider font-semibold">hoạt động: {{ $customers->whereNotNull('user_id')->where('user.status', 1)->count(); }}</p>
+                <p class="text-md text-red-500 uppercase tracking-wider font-semibold">bị khóa: {{ $customers->whereNotNull('user_id')->where('user.status', 0)->count(); }}</p>
+            </div>
         </div>
         <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100">
             <p class="text-xs text-red-400 uppercase tracking-wider font-semibold">Khách hàng vãng lai</p>
             <p class="text-3xl font-bold text-red-500 mt-2">{{ $customers->whereNull('user_id')->count(); }}</p>
+
         </div>
     </div>
 
@@ -55,6 +62,7 @@
                             <th class="px-8 py-4 text-center">STT</th>
                             <th class="px-8 py-4">Tên khách hàng</th>
                             <th class="px-8 py-4">Email</th>
+                            <th class="px-8 py-4">Trạng thái</th>
                             <th class="px-8 py-4">Ngày đăng ký</th>
                             <th class="px-8 py-4 text-center">Hành động</th>
                         </tr>
@@ -65,6 +73,17 @@
                             <td class="px-8 py-4 text-center">{{ $customer->id }}</td>
                             <td class="px-8 py-4">{{ $customer->name }}</td>
                             <td class="px-8 py-4">{{ $customer->email }}</td>
+                            <td class="px-8 py-4 font-bold">
+                                @if($customer->user)
+                                    @if($customer->user->status == 1)
+                                        <span class="text-green-500">Hoạt động</span>
+                                    @else
+                                        <span class="text-red-500">Bị khóa</span>
+                                    @endif
+                                @else
+                                    <span class="text-blue-500">Vãng lai</span>
+                                @endif
+                            </td>
                             <td class="px-8 py-4">{{ $customer->created_at }}</td>
                             <td class="px-8 py-4">
                                 <button x-data @click="$dispatch('open-modal', 'detail-customer-modal-{{ $customer->id }}')"
