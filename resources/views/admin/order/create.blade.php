@@ -1,8 +1,8 @@
 <x-my-modal name="create-order-modal" maxWidth="8xl" >
     <x-slot name="title">Thêm đơn hàng</x-slot>
     <x-slot name="body">
-        <form action="..." method="POST" id="createOrderForm">
-
+        <form action="{{route('admin.orders.store')}}" method="POST" id="createOrderForm">
+            @csrf
             <div class="information-customer ">
                 <h1 class="text-xl font-bold text-gray-800">Thông tin khách hàng</h1>
                 <div class="flex gap-4">
@@ -20,7 +20,7 @@
                     <div class="mt-2">
                         <label for="customer_name" class="block text-sm font-semibold text-gray-700">Tên khách hàng<span class="text-red-500">*</span></label>
                         <!-- chọn khách hàng dành cho khách có tài khoản -->
-                        <select name="name" id="customer_name" class="user hidden w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                        <select name="user-name" id="customer_name" class="user hidden w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
                             @foreach($customers as $customer)
                                 <option value="{{$customer->id}}"
                                 data-phone="{{$customer->phone}}"
@@ -30,9 +30,9 @@
                         </select>
 
                         <!-- Nhập vào khi chưa có tài khoản -->
-                         <input type="text" name="name" id="product_name" required
+                         <input type="text" name="guest-name" id="guest-name" 
                             placeholder="Ví dụ: Triên Trung Cương"
-                            class="hidden non-user w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                            class="non-user w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
                     </div>
                  
 
@@ -195,7 +195,7 @@
         <button 
             type="submit" 
             form="createOrderForm" 
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all">
+            class="px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
             Thêm sản phẩm
         </button>
     </x-slot>

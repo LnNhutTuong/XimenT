@@ -9,26 +9,26 @@ const OrderCreate = {
         const chooseTypeCustomers = document.getElementById(
             "choose-type-customers",
         );
+        const userSelect = document.getElementById("customer_name");
+        const guestInput = document.getElementById("guest-name");
 
-        const user = document.querySelector(".user");
-        const non_user = document.querySelector(".non-user");
-        const customerPhone = document.getElementById("customer_phone");
-        const customerAddress = document.getElementById("customer_address");
+        const userDiv = document.querySelector(".user");
+        const nonUserDiv = document.querySelector(".non-user");
 
         const toggleCustomerType = () => {
             if (chooseTypeCustomers.value === "user") {
-                user.classList.remove("hidden");
-                non_user.classList.add("hidden");
-            } else {
-                user.classList.add("hidden");
-                non_user.classList.remove("hidden");
+                userDiv.classList.remove("hidden");
+                nonUserDiv.classList.add("hidden");
 
-                customerPhone.value = "";
-                customerPhone.readOnly = false;
-                customerPhone.classList.remove("bg-gray-100");
-                customerAddress.value = "";
-                customerAddress.readOnly = false;
-                customerAddress.classList.remove("bg-gray-100");
+                userSelect.required = true;
+                guestInput.required = false;
+                guestInput.value = "";
+            } else {
+                userDiv.classList.add("hidden");
+                nonUserDiv.classList.remove("hidden");
+
+                userSelect.required = false;
+                guestInput.required = true;
             }
         };
 

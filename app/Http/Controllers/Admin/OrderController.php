@@ -19,4 +19,9 @@ class OrderController extends Controller
         $products = Products::All();
         return view('admin.order.index', compact('orders', 'orderItems', 'customers', 'products'));
     }
+
+    public function store(Request $request){
+        dd($request->all());
+
+    }
 }
