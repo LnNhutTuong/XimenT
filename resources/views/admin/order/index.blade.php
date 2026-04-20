@@ -101,6 +101,8 @@
                                             <span class="text-green-500">Hoàn thành</span>
                                         @elseif($order->status == 'cancelled')
                                             <span class="text-red-500">Đã hủy</span>
+                                        @elseif($order->status == 'return')
+                                            <span class="text-red-500">Trả hàng</span>
                                         @endif
                                     @endif
                                 </p>

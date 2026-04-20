@@ -2,8 +2,9 @@
     <x-my-modal name="detail-order-modal-{{ $order->id }}" maxWidth="8xl" >
     <x-slot name="title">Chi tiết đơn hàng</x-slot>
     <x-slot name="body">
-        <form action="{{route('admin.orders.store')}}" method="POST" id="detail-order-form-{{ $order->id }}">
+        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="detail-order-form-{{ $order->id }}">
             @csrf
+            @method('PUT')
             <div class="information-customer ">
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold text-gray-800">Thông tin khách hàng</h1>   
@@ -13,10 +14,11 @@
                                 class="status-order bg-gray-100 w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
                                 readonly>
                             <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
-                            <option value="processing" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
+                            <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
                             <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao hàng</option>
                             <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã hoàn thành</option>
                             <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                            <option value="return" {{ $order->status == 'return' ? 'selected' : '' }}>Trả hàng</option>
                         </select>
                     </div>
                 </div>
@@ -115,7 +117,7 @@
                             <thead class="sticky top-0 bg-gray-50 z-10 text-lg font-bold border-b border-gray-50">
                                 <tr>
                                     <th class="px-8 py-4 text-center">Tên sản phẩm</th>
-                                    <th class="px-8 py-4 text-center">Số lượng</th>                                   
+                                    <th class="px-8 py-4 text-center">Số lượng</th>     
                                     <th class="px-8 py-4 text-center">Thành tiền</th>
                                     <th class="px-8 py-4 text-center">Hành động</th>
                                 </tr>
@@ -124,9 +126,12 @@
                             <tbody class="order-items-body">
                                 @foreach($order->details as $orderItem)
                                     <tr data-variant-id="{{ $orderItem->variant_id }}"
-                                        data-price = "{{ $orderItem->price }}"
+                                        data-price="{{ $orderItem->price }}" 
                                         data-quantity="{{ $orderItem->variant->stock_quantity }}">
-                                        <td class="px-8 py-4 text-center">{{ $orderItem->variant->product->name }}</td>
+                                        <td class="px-8 py-2 text-center">
+                                            <div class="font-semibold">{{ $orderItem->variant->product->name }}</div>
+                                            <div class="text-xs text-blue-500">Size: {{ $orderItem->variant->size->name }}</div>
+                                        </td>                                        
                                         <td class="px-8 py-4 text-center">
                                              <input type="number" 
                                                     value="{{ $orderItem->quantity }}" 
@@ -156,84 +161,6 @@
                                 <span class="total-price-display text-xl font-bold text-red-600 ml-2">{{ number_format($order->total_amount, 0, ',', '.') }} VNĐ</span>
                             </div>
                         </div>
-                </div>
-                <div class="w-1/2 hidden" id="product-list-in-stock">
-
-                    <div class="flex mb-2 justify-between items-center">
-                        <label for="product-list" class="block text-lg font-semibold text-gray-700">Danh sách sản phẩm trong kho</label>
-                        <div class="relative">
-                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-                            </svg>
-                            <input
-                                id="search-input"
-                                type="text"
-                                placeholder="Tìm kiếm đơn hàng..."
-                                class="pl-9 pr-4 py-2 text-md border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 w-64"
-                                onkeyup="filterTable()"
-                            />
-                        </div>
-                    </div>
-                    
-                    <div class="product-list h-[352px] overflow-y-auto relative bg-neutral-primary-soft shadow-xs rounded-base border border-default">
-                            <table class="w-full text-left rtl:text-right text-body border-collapse">
-                                <thead class="sticky top-0 bg-gray-50 z-10 text-lg font-bold border-b border-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-4 text-center">Tên sản phẩm</th>
-                                        <th class="px-6 py-4 text-center">Size</th>
-                                        <th class="px-6 py-4 text-center">Số lượng kho</th>
-                                        <th class="px-6 py-4 text-center">Giá tiền</th>                                   
-                                        <th class="px-6 py-4 text-center">Hành động</th>
-
-                                    </tr>
-                                </thead>
-                            
-                                <tbody>
-                                @foreach ($products as $product)
-                                        @foreach ($product->variants as $variant)
-                                        @if($variant->stock_quantity > 0)
-                                        <tr class="border-b">
-                                            <td class="px-8 py-2 text-center">{{ $product->name }}</td>
-                                            <td class="px-8 py-2 text-center font-bold text-blue-600">{{ $variant->size->name }}</td>
-                                            <td class="px-8 py-2 text-center">
-                                                <input type="number" 
-                                                    class="input-quantity-buy w-16 border rounded text-center" 
-                                                    value="1" 
-                                                    min="1" 
-                                                    max="{{ $variant->stock_quantity }}">
-                                                <span class="text-xs text-gray-400 block">Kho: {{ $variant->stock_quantity }}</span>
-                                            </td>
-                                            <td class="px-8 py-2 text-center">
-                                                @if($variant->discount_price)
-                                                    <span class="text-red-500 line-through">{{ number_format($variant->price) }} VNĐ</span>
-                                                    <br>
-                                                    <span>{{ number_format($variant->discount_price) }} VNĐ</span>
-                                                @else
-                                                    <span>{{ number_format($variant->price) }} VNĐ</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-8 py-2 text-center ">
-                                                <button class="btn-add-order-detail"
-                                                        type="button"
-                                                        data-product-id="{{ $product->id }}"
-                                                        data-variant-id="{{ $variant->id }}"
-                                                        data-product-name="{{ $product->name }}"
-                                                        data-size="{{ $variant->size->name }}"
-                                                        data-price="{{ $variant->discount_price ?? $variant->price }}"
-                                                        data-quantity="{{ $variant->stock_quantity }}"
-                                                >
-                                                    <svg class="size-10 hover:cursor-pointer hover:text-green-500 transform hover:-translate-y-0.5 transition-all" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endif
-                                        @endforeach
-                                @endforeach
-                                </tbody>
-                        </table>
-                    </div> 
                 </div>
                </div>
             </div>

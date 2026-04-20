@@ -10,6 +10,7 @@ use App\Models\OrderDetails;
 use App\Models\Customer;
 use App\Models\Products;
 use App\Models\ProductVariants;
+
 class OrderController extends Controller
 {
     public function index()
@@ -104,6 +105,55 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Thêm đơn hàng thành công');
         }catch(Exception $e){
             return redirect()->back()->with('error', 'Thêm đơn hàng thất bại');
+        }
+    }
+
+    public function update(Request $request, Orders $order)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,confirmed,shipping,completed,cancelled,return',
+        ]);
+
+        try {
+
+            if (in_array($order->status, ['completed', 'cancelled', 'return'])) {
+                return redirect()->back()->with('error', 'Đơn hàng đã kết thúc, không thể cập nhật.');
+            }
+            
+            DB::transaction(function () use ($request, $order) {
+
+                $oldStatus = $order->status;
+                $newStatus = $request->status;
+
+                $order->update([
+                    'status' => $newStatus,
+                ]);
+
+                $restockStatuses = ['cancelled', 'return']; // những trạng thái khiến cho product +1 stock lại
+
+                if (
+                    !in_array($oldStatus, $restockStatuses) &&
+                    in_array($newStatus, $restockStatuses)
+                ) {
+
+                    foreach ($order->details as $detail) {
+                        $variant = ProductVariants::findOrFail($detail->product_variant_id);
+                        $variant->increment('stock_quantity', $detail->quantity);
+                        if ($variant->stock_quantity > 0) {
+                            $variant->product->update([
+                                'is_active' => 1
+                            ]);
+                        }
+                    }
+                }
+            });
+
+            return redirect()->back()->with('success', 'Cập nhật trạng thái thành công');
+
+        } catch (Exception $e) {
+
+            return redirect()->back()->with('error', 'Cập nhật đơn hàng thất bại');
+
         }
     }
 }
