@@ -24,7 +24,7 @@ class Orders extends Model
     // 1 Đơn hàng có nhiều Chi tiết đơn hàng
     public function details()
     {
-        return $this->hasMany(OrderDetails::class);
+        return $this->hasMany(OrderDetails::class, 'order_id');
     }
 
     // 1 Đơn hàng thuộc 1 User (nếu có đăng ký)

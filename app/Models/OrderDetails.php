@@ -16,7 +16,7 @@ class OrderDetails extends Model
     // 1 Chi tiết đơn hàng thuộc 1 Đơn hàng
     public function order()
     {
-        return $this->belongsTo(Orders::class);
+        return $this->belongsTo(Orders::class, 'order_id');
     }
 
     // 1 Chi tiết đơn hàng thuộc 1 Biến thể

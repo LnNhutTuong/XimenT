@@ -12,7 +12,7 @@
             <p class="text-md text-gray-500 mt-1">Tổng cộng <span class="font-semibold text-indigo-600">{{ $orders->count() }}</span> đơn hàng</p>
         </div>
 
-        <div>
+        <div class="create-order-modal-container">
             <button x-data
                 @click="$dispatch('open-modal', 'create-order-modal')"
                 class="cursor-pointer block px-4 py-2 rounded-lg text-white text-md font-medium bg-[#09090b] hover:bg-gray-800 transition-all"
@@ -112,12 +112,14 @@
                                 </p>
                             </td>
 
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-4">
                                 <button 
+                                    x-data @click="$dispatch('open-modal', 'detail-order-modal-{{ $order->id }}')"
                                     class="btn-open-detail cursor-pointer ml-auto block px-4 py-2 rounded-lg text-white text-md font-medium border-none outline-none tracking-wide bg-[#09090a] hover:bg-gray-300 hover:text-black transition-all">
                                     Xem chi tiết
                                 </button>
-                            </td>                  
+                                @include('admin.order.detail')               
+                            </td>
                         </tr>
                       @endforeach
                     </tbody>

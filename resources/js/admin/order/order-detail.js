@@ -1,7 +1,62 @@
-const OrderCreate = {
+const OrderDetail = {
     init() {
-        this.handleChooseTypeCustomers();
         this.handleAddOrderDetail();
+        this.handleEditMode();
+    },
+
+    handleEditMode() {
+        document.addEventListener("click", (e) => {
+            const editBtn = e.target.closest(".btn-edit-order");
+            if (!editBtn) return;
+
+            const modal = editBtn.closest(".detail-order-modal-container");
+
+            const statusOrder = modal.querySelector(".status-order");
+
+            const orderItems = modal.querySelector("#order-detail-of-user");
+            const removeItem = modal.querySelectorAll(
+                ".btn-remove-order-detail",
+            );
+
+            const productListInStock = modal.querySelector(
+                "#product-list-in-stock",
+            );
+            const quantityInputs = modal.querySelectorAll(
+                ".input-item-quantity",
+            );
+
+            const saveBtn = modal.querySelector(".btn-accept-edit");
+            const cancelBtn = modal.querySelector(".btn-cancel-edit");
+            const deleteBtn = modal.querySelector(".btn-delete-order");
+
+            statusOrder.classList.remove("bg-gray-100");
+            statusOrder.readOnly = false;
+
+            orderItems.classList.remove("w-full");
+            orderItems.classList.add("w-1/2");
+
+            productListInStock.classList.remove("hidden");
+
+            removeItem.forEach((item) => {
+                item.classList.remove("opacity-20");
+                item.disabled = false;
+            });
+
+            quantityInputs.forEach((input) => {
+                input.readOnly = false;
+
+                const tr = input.closest("tr");
+                const variantId = tr.dataset.variantId;
+                input.name = `items[${variantId}][quantity]`;
+            });
+
+            this.updateTotalOrder(modal);
+
+            editBtn.classList.add("hidden");
+            deleteBtn.classList.add("hidden");
+            saveBtn.classList.remove("hidden");
+            cancelBtn.classList.remove("hidden");
+        });
     },
 
     handleFormValidate() {
@@ -20,7 +75,7 @@ const OrderCreate = {
                 }
             }
 
-            const orderItems = document.getElementById("order-items-body");
+            const orderItems = document.querySelector(".order-items-body");
             if (orderItems.children.length === 0) {
                 e.preventDefault();
                 return showError("Vui lòng thêm sản phẩm vào đơn hàng!");
@@ -37,52 +92,8 @@ const OrderCreate = {
         });
     },
 
-    handleChooseTypeCustomers() {
-        const typeSelect = document.getElementById("choose-type-customers");
-        const userSelect = document.getElementById("user-id");
-        const guestInput = document.getElementById("guest-name");
-        const phoneInput = document.getElementById("customer_phone");
-        const addressInput = document.getElementById("customer_address");
-
-        const updateFields = () => {
-            const isUser = typeSelect.value === "user";
-
-            document.querySelector(".user").classList.toggle("hidden", !isUser);
-            document
-                .querySelector(".non-user")
-                .classList.toggle("hidden", isUser);
-            userSelect.disabled = !isUser;
-            guestInput.disabled = isUser;
-
-            if (isUser) {
-                const selected = userSelect.options[userSelect.selectedIndex];
-                phoneInput.value = selected.dataset.phone || "";
-                addressInput.value = selected.dataset.address || "";
-                phoneInput.readOnly = true;
-                addressInput.readOnly = true;
-                phoneInput.classList.add("bg-gray-100");
-                addressInput.classList.add("bg-gray-100");
-            } else {
-                phoneInput.readOnly = false;
-                addressInput.readOnly = false;
-
-                // guestInput.value = "";
-                phoneInput.value = "";
-                addressInput.value = "";
-
-                phoneInput.classList.remove("bg-gray-100");
-                addressInput.classList.remove("bg-gray-100");
-            }
-        };
-
-        typeSelect.addEventListener("change", updateFields);
-        userSelect.addEventListener("change", updateFields);
-
-        updateFields();
-    },
-
     handleAddOrderDetail() {
-        const orderBody = document.getElementById("order-items-body");
+        const orderBody = document.querySelector(".order-items-body");
         if (!orderBody) return;
 
         document.addEventListener("click", (e) => {
@@ -98,6 +109,8 @@ const OrderCreate = {
                 const size = btnAdd.dataset.size;
                 const price = btnAdd.dataset.price;
                 const quantity = btnAdd.dataset.quantity; // số lượng kho
+
+                const modal = btnAdd.closest(".detail-order-modal-container");
 
                 //lay row
                 const quantityInput = row.querySelector(
@@ -124,7 +137,7 @@ const OrderCreate = {
                     });
 
                     row.querySelector(".input-quantity-buy").value = quantity;
-                    this.updateTotalOrder();
+                    this.updateTotalOrder(modal);
                     return;
                 }
 
@@ -151,14 +164,16 @@ const OrderCreate = {
                     quantityToOrdder,
                     quantity,
                 );
-                this.updateTotalOrder();
+                this.updateTotalOrder(modal);
             }
             if (btnRemove) {
+                const currentModal = btnRemove.closest(
+                    ".detail-order-modal-container",
+                );
                 btnRemove.closest("tr").remove();
-                this.updateTotalOrder();
+                this.updateTotalOrder(currentModal);
             }
         });
-
         orderBody.addEventListener("change", (e) => {
             if (e.target.tagName === "INPUT" && e.target.type === "number") {
                 const input = e.target;
@@ -166,6 +181,7 @@ const OrderCreate = {
                 const row = input.closest("tr");
 
                 const quantity = parseInt(row.dataset.quantity); // số lưowng kho
+                const modal = input.closest(".detail-order-modal-container");
 
                 if (quantityOrder <= 0) {
                     Swal.fire({
@@ -176,7 +192,7 @@ const OrderCreate = {
                     });
                     input.value = 1;
                     this.updateRowTotal(row); // reset về 1
-                    this.updateTotalOrder();
+                    this.updateTotalOrder(modal);
                     return;
                 }
 
@@ -190,19 +206,19 @@ const OrderCreate = {
 
                     input.value = quantity;
                     this.updateRowTotal(row); // reset về quantity
-                    this.updateTotalOrder();
+                    this.updateTotalOrder(modal);
                     return;
                 }
+
                 this.updateRowTotal(row);
-                this.updateTotalOrder();
+                this.updateTotalOrder(modal);
             }
         });
     },
 
     addTableRow(orderBody, id, name, size, price, quantity, stock) {
         const total = price * quantity;
-        const html = `
-        <tr class="border-b" data-variant-id="${id}" data-quantity="${stock}" data-price="${price}">
+        const html = `<tr class="border-b" data-variant-id="${id}" data-quantity="${stock}" data-price="${price}">
             <td class="px-8 py-2 text-center">
                 <div class="font-semibold">${name}</div>
                 <div class="text-xs text-blue-500">Size: ${size}</div>
@@ -219,7 +235,7 @@ const OrderCreate = {
             </td>
             <input type="hidden" name="items[${id}][variant_id]" value="${id}">
             <td class="px-8 py-2 text-center">
-                <button type="button" class="btn-remove-order-detail text-red-500 hover:text-red-700">
+                <button type="button" class="btn-remove-order-detail hover:text-red-700">
                     <svg class="size-8 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -231,54 +247,48 @@ const OrderCreate = {
 
     updateRowTotal(row) {
         const price = parseFloat(row.dataset.price);
-        const quantity = parseInt(
-            row.querySelector('input[type="number"]').value,
-        );
-        const totalPriceProdut = row.querySelector(".row-total");
+        const qtyInput =
+            row.querySelector(".input-item-quantity") ||
+            row.querySelector('input[type="number"]');
+        const quantity = parseInt(qtyInput.value) || 0;
 
+        const totalPriceProduct = row.querySelector(".row-total");
         const newTotal = price * quantity;
-        totalPriceProdut.innerText =
+
+        totalPriceProduct.innerText =
             new Intl.NumberFormat("vi-VN").format(newTotal) + " VNĐ";
     },
+    updateTotalOrder(modal) {
+        const orderBody = modal.querySelector(".order-items-body");
 
-    updateTotalOrder() {
-        const orderBody = document.getElementById("order-items-body");
-
-        const totalPriceOrderInput =
-            document.getElementById("total-price-input");
-        const totalPriceOrderDisplay = document.getElementById(
-            "total-price-display",
-        );
-
-        const totalQuantityOrderInput = document.getElementById(
-            "total-quantity-input",
-        );
-        const totalQuantityOrderDisplay = document.getElementById(
-            "total-quantity-display",
-        );
-
+        const totalQtyDisplay = modal.querySelector(".total-quantity-display");
+        const totalPriceDisplay = modal.querySelector(".total-price-display");
         const allRows = Array.from(orderBody.querySelectorAll("tr"));
 
         let totalQty = 0;
         let totalCash = 0;
 
         allRows.forEach((row) => {
-            const qty =
-                parseInt(row.querySelector('input[type="number"]').value) || 0;
-            const price = parseFloat(row.dataset.price) || 0;
+            const qtyInput = row.querySelector('input[type="number"]');
+            const qty = qtyInput ? parseInt(qtyInput.value) || 0 : 0;
+
+            const price = parseFloat(row.dataset.price || 0);
+
             totalQty += qty;
             totalCash += qty * price;
         });
 
-        totalQuantityOrderDisplay.innerText = totalQty;
-        totalPriceOrderDisplay.innerText =
-            new Intl.NumberFormat("vi-VN").format(totalCash) + "đ";
+        if (totalQtyDisplay) {
+            totalQtyDisplay.innerText = totalQty;
+        }
 
-        totalQuantityOrderInput.value = totalQty;
-        totalPriceOrderInput.value = totalCash;
+        if (totalPriceDisplay) {
+            totalPriceDisplay.innerText =
+                new Intl.NumberFormat("vi-VN").format(totalCash) + " VNĐ";
+        }
     },
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    OrderCreate.init();
+    OrderDetail.init();
 });

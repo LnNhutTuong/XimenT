@@ -246,8 +246,8 @@
     </x-slot>
 
     <x-slot name="footer">
-          <div class="pt-6 border-t border-gray-100 flex gap-4">
-               <button type="submit" form="productForm-{{ $product->id }}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
+            <div class="pt-6 border-t border-gray-100 flex gap-4">
+                    <button type="submit" form="productForm-{{ $product->id }}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
                         Cập nhật
                     </button>
                     <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
@@ -259,7 +259,7 @@
                     <button type="submit" form="form-delete-{{ $product->id}}" class="btn-delete-product px-8 py-3 rounded-xl text-red-600 text-sm font-bold bg-red-50 border border-red-100 hover:bg-red-600 hover:text-white transition-all transform hover:-translate-y-0.5">
                         Xóa
                     </button>
-                </div>      
+            </div>      
     </x-slot>
 </x-my-modal>
 </div>
