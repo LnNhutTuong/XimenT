@@ -165,6 +165,10 @@
                </div>
             </div>
         </form>
+        <form id="form-delete-{{ $order->id}}" action="{{ route('admin.orders.destroy', $order->id) }}" method="post">
+                @csrf
+                @method('DELETE')
+        </form>
     </x-slot>
     <x-slot name="footer">
         <div class="pt-6 border-t border-gray-100 flex gap-4">

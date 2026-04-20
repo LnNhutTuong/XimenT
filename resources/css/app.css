@@ -55,9 +55,3 @@ html {
         @apply text-xl;
     }
 }
-
-/* Product */
-.product-container {
-    border: 1px solid blue;
-    margin: 15px 150px;
-}

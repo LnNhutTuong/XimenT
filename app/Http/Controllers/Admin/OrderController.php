@@ -127,6 +127,7 @@ class OrderController extends Controller
 
                 $order->update([
                     'status' => $newStatus,
+                    'updated_at' => now()->timezone('Asia/Ho_Chi_Minh'),
                 ]);
 
                 $restockStatuses = ['cancelled', 'return']; // những trạng thái khiến cho product +1 stock lại
@@ -153,7 +154,19 @@ class OrderController extends Controller
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', 'Cập nhật đơn hàng thất bại');
-
         }
     }
+
+    public function destroy(Orders $order){
+
+            if (in_array($order->status, ['completed', 'cancelled', 'return'])) {
+                $order->details()->delete();
+                $order->delete();
+                return redirect()->back()->with('success', 'Xóa đơn hàng thành công');
+            }
+
+            return redirect()->back()->with('error','Không thể xóa các đơn hàng đang trong quá trình xử lí');
+            
+    }
+  
 }

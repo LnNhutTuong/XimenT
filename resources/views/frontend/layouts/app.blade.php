@@ -11,7 +11,7 @@
     @include('frontend.layouts.header')
 
     <main>
-        {{ $slot ?? '' }}
+        <!-- {{ $slot ?? '' }} -->
         @yield('content')
     </main>
 

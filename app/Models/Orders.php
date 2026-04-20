@@ -15,10 +15,12 @@ class Orders extends Model
         'address',
         'note',
         'order_date',
+        'updated_at',
     ];
 
     protected $casts = [
         'order_date' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // 1 Đơn hàng có nhiều Chi tiết đơn hàng

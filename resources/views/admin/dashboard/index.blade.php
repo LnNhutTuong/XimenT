@@ -18,7 +18,9 @@
         <p class="text-4xl font-bold mt-2">{{ $brandCount }}</p>
     </div>
 </div>
-
+<div>
+    <canvas id="myChart"></canvas>
+</div>
 <div class="mt-12 bg-white rounded-2xl shadow-sm border p-8">
     <h3 class="text-xl font-bold text-gray-800">Thông tin phân quyền</h3>
     <div class="mt-4 p-4 bg-gray-50 rounded-xl border-l-4 border-indigo-500">
@@ -26,4 +28,7 @@
         <p class="text-sm text-gray-500 mt-2 italic">Hệ thống phân quyền (RBAC) đã được kích hoạt. Chỉ người dùng có role là 'admin' mới có thể thấy và truy cập vào khu vực này.</p>
     </div>
 </div>
+@endsection
+@section('scripts')
+    @vite('resources/js/admin/dashboard/dashboard.js')
 @endsection
