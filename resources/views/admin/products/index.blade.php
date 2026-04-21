@@ -41,23 +41,48 @@
         </div>
     </div>
 
-    {{-- Table --}}
     <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-        {{-- Search Bar --}}
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <h3 class="text-xl font-semibold text-gray-700">Danh sách sản phẩm</h3>
+        <form method="GET" action="{{ route('admin.products.index') }}" class="flex items-center gap-4">
+            <div class="relative">
+                <select 
+                    name="status"
+                    id="status-filter"
+                    class="appearance-none pl-4 pr-10 py-2 text-md border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+                    onchange="this.form.submit()"
+                >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Đang bán</option>
+                    <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Ngừng bán</option>
+                </select>
+                <!-- <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-gray-400">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div> -->
+            </div>
+
             <div class="relative">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
                 <input
+                    name="search"
                     id="search-input"
                     type="text"
                     placeholder="Tìm kiếm sản phẩm..."
+                    value="{{ request('search') }}"
                     class="pl-9 pr-4 py-2 text-md border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 w-64"
-                    onkeyup="filterTable()"
                 />
             </div>
+
+            @if(request('search') || request('status') !== null)
+                <a href="{{ route('admin.products.index') }}" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                    Xóa lọc
+                </a>
+            @endif
+        </form>
         </div>
             <div class="relative bg-neutral-primary-soft shadow-xs rounded-base border border-default">
                 <table class="w-full text-left rtl:text-right text-body">
@@ -71,9 +96,9 @@
                             <th class="px-8 py-4 text-right">Hành động</th>
                         </tr>
                     </thead>
-                    <tbody id="category-tbody">              
+                    <tbody id="product-tbody">              
                         @foreach($products as $product)
-                        <tr class="hover:bg-gray-50/30 transition-colors group">
+                        <tr class="hover:bg-gray-50/30 transition-colors group" data-status="{{ $product->is_active }}">
                             <td class="px-8 py-5">
                                 <div class="flex items-center gap-4">
                                     <div class="w-14 h-14 rounded-xl overflow-hidden border border-gray-100 flex-shrink-0 bg-gray-50">
@@ -132,5 +157,6 @@
                 </table>
             </div>
         </div>
+        {{ $products->links('pagination::tailwind') }}    
     </div>
 @endsection

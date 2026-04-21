@@ -16,9 +16,19 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Products::with(['variants','images'])->get();
+        $products = Products::with(['variants', 'images'])
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('slug', 'like', "%{$search}%");
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+            ->paginate(5)
+            ->withQueryString();
+
         $categories = Categories::with('sizes')->get();
         $brands = Brands::all();
         $productsInStock = Products::where('is_active', 1)->get();

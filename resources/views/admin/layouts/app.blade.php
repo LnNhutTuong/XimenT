@@ -27,7 +27,7 @@
         @include('admin.layouts.header')
 
         {{-- Page Content (Scrollable) --}}
-        <div class="flex-grow overflow-y-auto p-8">
+        <div class="flex-grow overflow-y-auto p-5">
             @yield('content')
         </div>
 

@@ -61,7 +61,7 @@ class HomeController extends Controller
     }
 
     public function productDetail($slug){
-        $product = Products::where('slug', $slug)->first();
+        $product = Products::where('slug', $slug)->firstOrFail();
         $productVariants = ProductVariants::where('product_id', $product->id)->get();
         $productImages = ProductImages::where('product_id', $product->id)->get();
         return view('frontend.products.detail', compact('product', 'productVariants', 'productImages')); 

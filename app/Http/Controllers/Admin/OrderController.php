@@ -13,11 +13,21 @@ use App\Models\ProductVariants;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $orders = Orders::with(['customer', 'details.variant.product', 'details.variant.size'])
+                    ->when($request->search, function ($query, $search) {
+                        $query->where('order_code', 'like', "%{$search}%")
+                              ->orWhereHas('customer', function($q) use ($search) {
+                                  $q->where('name', 'like', "%{$search}%");
+                              });
+                    })
+                    ->when($request->status, function ($query, $status) {
+                        $query->where('status', $status);
+                    })
                     ->orderBy('created_at', 'desc')
-                    ->get();
+                    ->paginate(5)
+                    ->withQueryString();
                     
         $orderItems = OrderDetails::with('order', 'variant')->get();
         $customers = Customer::whereNotNull('user_id')
@@ -103,8 +113,8 @@ class OrderController extends Controller
         });
 
         return redirect()->back()->with('success', 'Thêm đơn hàng thành công');
-        }catch(Exception $e){
-            return redirect()->back()->with('error', 'Thêm đơn hàng thất bại');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', 'Thêm đơn hàng thất bại: ' . $e->getMessage());
         }
     }
 
@@ -151,9 +161,9 @@ class OrderController extends Controller
 
             return redirect()->back()->with('success', 'Cập nhật trạng thái thành công');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
-            return redirect()->back()->with('error', 'Cập nhật đơn hàng thất bại');
+            return redirect()->back()->with('error', 'Cập nhật đơn hàng thất bại: ' . $e->getMessage());
         }
     }
 

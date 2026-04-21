@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         $products = Products::all();
-        $categories = Categories::all();
+        $categories = Categories::paginate(5);
         $sizes = Sizes::all(); // Thêm dòng này để lấy tất cả size
 
         $categorywithproduct = Categories::whereHas('products')->get();

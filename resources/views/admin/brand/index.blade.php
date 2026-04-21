@@ -117,6 +117,7 @@
                 </table>
             </div>
         </div>
+        {{ $brands->links('pagination::tailwind') }}    
     </div>
 
 

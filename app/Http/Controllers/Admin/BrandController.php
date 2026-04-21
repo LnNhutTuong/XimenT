@@ -12,7 +12,7 @@ class BrandController extends Controller
 {
     public function index()
     {
-        $brands = Brands::all();
+        $brands = Brands::paginate(5);
         $products = Products::all();
         $brandwithproduct = Brands::has('products')->get();
         $brandwithoutproduct = Brands::doesntHave('products')->get();

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class my-modal extends Component
+class MyModal extends Component
 {
     /**
      * Create a new component instance.

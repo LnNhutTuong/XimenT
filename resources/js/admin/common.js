@@ -1,26 +1,41 @@
-function filterTable(inputId, tbodyId) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
+function initTableFilter(tbodyId, searchId, statusId) {
+    const tbody = document.getElementById(tbodyId);
+    const searchInput = document.getElementById(searchId);
+    const statusSelect = document.getElementById(statusId);
 
-    input.addEventListener("keyup", function () {
-        const filter = this.value.toLowerCase();
-        const rows = document.querySelectorAll(`#${tbodyId} tr`);
+    if (!tbody) return;
+
+    const applyFilters = () => {
+        const searchText = searchInput
+            ? searchInput.value.toLowerCase().trim()
+            : "";
+        const statusValue = statusSelect ? statusSelect.value : "";
+        const rows = tbody.querySelectorAll("tr");
 
         rows.forEach((row) => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(filter) ? "" : "none";
+            const rowText = row.innerText.toLowerCase();
+            const rowStatus = row.getAttribute("data-status") || ""; //lay attribute ben
+
+            const matchesSearch = rowText.includes(searchText);
+            const matchesStatus =
+                statusValue === "" || rowStatus === statusValue;
+
+            row.style.display = matchesSearch && matchesStatus ? "" : "none";
         });
-    });
+    };
+
+    if (searchInput) {
+        searchInput.addEventListener("keyup", applyFilters);
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener("change", applyFilters);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("search-input")) {
-        const categoryTable = document.getElementById("category-tbody");
-        const brandTable = document.getElementById("brand-tbody");
-        const productTable = document.getElementById("product-tbody");
-
-        if (categoryTable) filterTable("search-input", "category-tbody");
-        if (brandTable) filterTable("search-input", "brand-tbody");
-        if (productTable) filterTable("search-input", "product-tbody");
-    }
+    initTableFilter("product-tbody", "search-input", "status-filter");
+    initTableFilter("category-tbody", "search-input", "status-filter");
+    initTableFilter("brand-tbody", "search-input", "status-filter");
+    initTableFilter("order-tbody", "search-input", "status-filter");
 });
