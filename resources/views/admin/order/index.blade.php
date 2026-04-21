@@ -65,6 +65,7 @@
                             <th class="px-8 py-4 text-center">Mã đơn hàng</th>
                             <th class="px-8 py-4">Khách hàng</th>
                             <th class="px-8 py-4">Tổng tiền</th>
+                            <th class="px-8 py-4">Thanh toán</th>
                             <th class="px-8 py-4">Trạng thái</th>
                             <th class="px-8 py-4">Ngày đặt</th>
                             <th class="px-8 py-4 text-right">Hành động</th>
@@ -76,7 +77,7 @@
 
                             <td class="px-8 py-5">
                                 <div class="flex items-center justify-center gap-4 text-center">
-                                    <p class="text-md font-bold text-gray-800 ">{{ $order->id }}</p>
+                                    <p class="text-md font-bold text-gray-800 ">{{ $order->order_code }}</p>
                                 </div>
                             </td>
                             
@@ -86,7 +87,11 @@
                                 <p class="text-md font-black text-red-600">
                                     {{ number_format($order->total_amount, 0, ',', '.') }} VNĐ
                                 </p>
-                            </td>       
+                            </td>
+
+                            <td class="px-8 py-5 font-bold uppercase text-gray-700">
+                                {{ $order->payment_method ?? 'COD' }}
+                            </td>
 
                             <td class="px-8 py-5">
                                 <p class="text-md font-black text-gray-800">

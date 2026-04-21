@@ -11,6 +11,7 @@ use App\Models\Brands;
 use App\Models\ProductVariants;
 use App\Models\Sizes;
 use App\Models\ProductImages;
+use App\Models\Orders;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
@@ -30,12 +31,14 @@ class ProductController extends Controller
 
    public function store(Request $request)
    {
-        // bỏ mấy cái VNĐ và ,
+        $discountValue = preg_replace('/[^0-9]/', '', $request->discount_amount);
+        
         $request->merge([
-            'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
-            'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price), //gia ban
-            'discount_amount' => (int) preg_replace('/[^0-9]/', '', $request->discount_amount), //gia yeu thuong
-        ]);  
+            'base_price'      => (int) preg_replace('/[^0-9]/', '', $request->base_price),
+            'sell_price'      => (int) preg_replace('/[^0-9]/', '', $request->sell_price),
+            // Nếu trống thì để null, nếu có số thì mới ép kiểu int
+            'discount_amount' => $discountValue !== '' ? (int) $discountValue : null,
+        ]);
 
         //random slug or sku (giải quyết được cái function 300 dòng của tôi :D)
         $baseSlug = $request->slug; //gửi lên
@@ -120,12 +123,13 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Products $product){
+        $discountValue = preg_replace('/[^0-9]/', '', $request->discount_amount);
+        
         $request->merge([
-            'base_price'       => (int) preg_replace('/[^0-9]/', '', $request->base_price), //gia goc
-            'sell_price'       => (int) preg_replace('/[^0-9]/', '', $request->sell_price), //gia ban
-            'discount_amount' => (int) preg_replace('/[^0-9]/', '', $request->discount_amount), //gia yeu thuong
-        ]);  
-
+            'base_price'      => (int) preg_replace('/[^0-9]/', '', $request->base_price),
+            'sell_price'      => (int) preg_replace('/[^0-9]/', '', $request->sell_price),
+            'discount_amount' => $discountValue !== '' ? (int) $discountValue : null,
+        ]);
 
         $slug = $request->slug;
 
@@ -173,6 +177,26 @@ class ProductController extends Controller
             'is_active' => $hasOrder ? $product->is_active : $request->product_status,
         ]);
 
+
+        // Xóa các biến thể không còn trong danh sách gửi lên
+        $requestedSizeIds = $request->sizes ?? [];
+        $existingVariants = $product->variants;
+
+        foreach ($existingVariants as $variant) {
+            if (!in_array($variant->size_id, $requestedSizeIds)) {
+                $hasActiveOrders = $variant->order_details()
+                    ->whereHas('order', function($q) {
+                        $q->whereNotIn('status', ['completed', 'cancelled', 'return']);
+                    })->exists();
+
+                if ($hasActiveOrders) {
+                    $sizeName = $variant->size->name ?? 'không xác định';
+                    return redirect()->back()->with('error', "Biến thể kích thước $sizeName đang có trong đơn hàng chưa hoàn tất nên không thể xóa!");
+                }
+                
+                $variant->delete();
+            }
+        }
 
         //neu co thi update con khong co thi them
        if ($request->has('sizes')) {

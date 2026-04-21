@@ -1,67 +1,50 @@
-<div class="detail-order-modal-container">
-    <x-my-modal name="detail-order-modal-{{ $order->id }}" maxWidth="8xl" >
+<x-my-modal name="detail-order-modal-{{ $order->id }}" maxWidth="8xl" >
     <x-slot name="title">Chi tiết đơn hàng</x-slot>
     <x-slot name="body">
-        <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="detail-order-form-{{ $order->id }}">
-            @csrf
-            @method('PUT')
             <div class="information-customer ">
                 <div class="flex justify-between">
                     <h1 class="text-xl font-bold text-gray-800">Thông tin khách hàng</h1>   
                     <div>
-                        <label for="status-order" class="block text-sm font-semibold text-gray-700">Trạng thái đơn hàng</label>
-                        <select name="status" id="status-order" 
-                                class="status-order bg-gray-100 w-full px-5 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
-                                disabled data-value="{{ $order->status }}">
-                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
-                            <option value="confirmed" {{ $order->status == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
-                            <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>Đang giao hàng</option>
-                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Đã hoàn thành</option>
-                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
-                            <option value="return" {{ $order->status == 'return' ? 'selected' : '' }}>Trả hàng</option>
-                        </select>
+                        <label class="block text-sm font-semibold text-gray-700">Trạng thái đơn hàng</label>
+                        @php
+                            $statusLabels = [
+                                'pending' => 'Chờ xác nhận',
+                                'confirmed' => 'Đã xác nhận',
+                                'shipping' => 'Đang giao hàng',
+                                'completed' => 'Đã hoàn thành',
+                                'cancelled' => 'Đã hủy',
+                                'return' => 'Trả hàng',
+                            ];
+                            $statusClasses = [
+                                'pending' => 'bg-amber-100 text-amber-700',
+                                'confirmed' => 'bg-blue-100 text-blue-700',
+                                'shipping' => 'bg-indigo-100 text-indigo-700',
+                                'completed' => 'bg-green-100 text-green-700',
+                                'cancelled' => 'bg-red-100 text-red-700',
+                                'return' => 'bg-gray-100 text-gray-700',
+                            ];
+                        @endphp
+                        <span class="inline-block px-4 py-2 mt-1 rounded-full text-xs font-bold uppercase tracking-wider {{ $statusClasses[$order->status] ?? 'bg-gray-100 text-gray-700' }}">
+                            {{ $statusLabels[$order->status] ?? $order->status }}
+                        </span>
                     </div>
                 </div>
                 
                 <div class="flex gap-4">
                      <div class="left w-1/2">
-                    <div class="mt-2">
-                        <label for="choose-type-customers" class="block text-sm font-semibold text-gray-700">Loại khách hàng<span class="text-red-500">*</span></label>
-                        <select name="choose-type-customers" id="choose-type-customers-{{ $order->id }}" class="bg-gray-100 choose-type-customers w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
-                                disabled>
-                            <option value="user" {{ $order->user_id ? 'selected' : '' }}>Có tài khoản</option>
-                            <option value="guest" {{ !$order->user_id ? 'selected' : '' }}>Khách vãng lai</option>
-                        </select>
-                    </div>
-               
-
                     <!-- Tên khách hàng -->
                     <div class="mt-2">
-                        <label for="user-id" class="block text-sm font-semibold text-gray-700">Tên khách hàng<span class="text-red-500">*</span></label>
-                        <!-- chọn khách hàng dành cho khách có tài khoản -->
-                        <select name="user-id" id="user-id-{{ $order->id }}" 
-                                class="bg-gray-100 user {{ $order->user_id ? '' : 'hidden' }} w-full px-4 py-3 text-sm border 
-                                border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 
-                                transition-all shadow-sm" readonly>
-                            @foreach($customers as $customer)
-                                <option value="{{$customer->id}}"
-                                 {{ $customer->id == $order->customer_id ? 'selected' : '' }}>
-                                    {{ $customer->name }}
-                                </option>
-                            @endforeach                            
-                        </select>
-
-                        <!-- Nhập vào khi chưa có tài khoản -->
+                        <label for="guest-name" class="block text-sm font-semibold text-gray-700">Tên khách hàng <span class="text-red-500">*</span></label>
                          <input type="text" name="guest-name" id="guest-name-{{ $order->id }}" 
                             placeholder="Ví dụ: Triên Trung Cương"
-                            class="bg-gray-100 guest-name non-user {{ !$order->user_id ? '' : 'hidden' }} w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
-                            value="{{ !$order->user_id ? $order->customer->name : '' }}" readonly>
+                            class="bg-gray-100 w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
+                            value="{{ $order->user_id ? $order->user->name : $order->customer->name }}" readonly>
 
                     </div>
                  
 
                     <!-- số điện thoại tương ứng với khách chọn -->
-                    <div class="mt-2">
+                    <div class="mt-12">
                         <label for="customer_phone" class="block text-sm font-semibold text-gray-700">Số điện thoại <span class="text-red-500">*</span></label>
                         <input type="text" name="phone" id="customer_phone" required
                             placeholder="Ví dụ: 0123456789"
@@ -164,30 +147,26 @@
                 </div>
                </div>
             </div>
-        </form>
-        <form id="form-delete-{{ $order->id}}" action="{{ route('admin.orders.destroy', $order->id) }}" method="post">
-                @csrf
-                @method('DELETE')
-        </form>
+
     </x-slot>
     <x-slot name="footer">
         <div class="pt-6 border-t border-gray-100 flex gap-4">
-                    <button type="submit" form="detail-order-form-{{ $order->id }}" class="btn-accept-edit hidden px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
-                        Cập nhật
-                    </button>
-                    <button type="button" class="btn-cancel-edit hidden px-6 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
-                        Hủy bỏ
-                    </button>
-                    <button type="button" class="btn-edit-order px-8 py-3 rounded-xl text-white text-sm font-bold bg-[#09090a] hover:bg-gray-800 shadow-lg shadow-gray-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
-                        Chỉnh sửa
-                    </button>
-                    <button type="submit" form="form-delete-{{ $order->id}}" class="btn-delete-order px-8 py-3 rounded-xl text-red-600 text-sm font-bold bg-red-50 border border-red-100 hover:bg-red-600 hover:text-white transition-all transform hover:-translate-y-0.5">
-                        Xóa
+                    @if($order->status == 'pending')
+                        <form action="{{ route('account.orders.cancel', $order->id) }}" method="POST" 
+                              onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">
+                            @csrf
+                            <button type="submit" class="px-8 py-3 rounded-xl text-white text-sm font-bold bg-red-600 hover:bg-red-700 shadow-lg shadow-red-200 transition-all whitespace-nowrap transform hover:-translate-y-0.5">
+                                Hủy đơn hàng
+                            </button>
+                        </form>
+                    @endif
+                    <button type="button" @click="show = false" class="px-8 py-3 rounded-xl text-gray-500 text-sm font-bold bg-gray-100 hover:bg-gray-200 transition-all transform hover:-translate-y-0.5">
+                        Đóng
                     </button>
             </div>      
     </x-slot>
 </x-my-modal>
-</div>
+
 @push('scripts')
-    @vite('resources/js/admin/order/order-detail.js');
+    @vite('resources/js/admin/order/order-detail.js')
 @endpush

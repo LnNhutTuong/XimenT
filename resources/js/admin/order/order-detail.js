@@ -17,34 +17,38 @@ const OrderDetail = {
             const deleteBtn = modal.querySelector(".btn-delete-order");
 
             statusOrder.classList.remove("bg-gray-100");
-            statusOrder.readOnly = false;
+            statusOrder.disabled = false;
 
             editBtn.classList.add("hidden");
             deleteBtn.classList.add("hidden");
             saveBtn.classList.remove("hidden");
             cancelBtn.classList.remove("hidden");
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    this.resetForm(modal);
+                });
+            }
         });
     },
-    //     const form = document.getElementById("createOrderForm");
-    //     if (!form) return;
+    resetForm(modal) {
+        const statusOrder = modal.querySelector(".status-order");
 
-    //     form.addEventListener("submit", (e) => {
-    //         const orderItems = document.querySelector(".order-items-body");
-    //         if (orderItems.children.length === 0) {
-    //             e.preventDefault();
-    //             return showError("Vui lòng thêm sản phẩm vào đơn hàng!");
-    //         }
+        const saveBtn = modal.querySelector(".btn-accept-edit");
+        const cancelBtn = modal.querySelector(".btn-cancel-edit");
+        const deleteBtn = modal.querySelector(".btn-delete-order");
+        const editBtn = modal.querySelector(".btn-edit-order");
 
-    //         function showError(message) {
-    //             Swal.fire({
-    //                 icon: "warning",
-    //                 title: "Thiếu thông tin",
-    //                 text: message,
-    //                 confirmButtonColor: "#000000ff",
-    //             });
-    //         }
-    //     });
-    // },
+        statusOrder.classList.add("bg-gray-100");
+        statusOrder.value = statusOrder.dataset.value;
+        statusOrder.disabled = true;
+
+        editBtn.classList.remove("hidden");
+        deleteBtn.classList.remove("hidden");
+
+        saveBtn.classList.add("hidden");
+        cancelBtn.classList.add("hidden");
+    },
 };
 
 document.addEventListener("DOMContentLoaded", () => {

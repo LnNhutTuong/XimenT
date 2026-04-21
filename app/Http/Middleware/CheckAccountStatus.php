@@ -15,7 +15,7 @@ class CheckAccountStatus
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->check() && !auth()->user()->status){
+        if(auth()->check() && auth()->user()->status == 0){
             auth()->logout();
             return redirect()->route('login')->with('error', 
             'Tài khoản của bạn đã bị khóa vì lý do nào đó...');

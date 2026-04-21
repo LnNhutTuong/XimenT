@@ -132,11 +132,11 @@ const ProductCreate = {
         const calculateDiscount = () => {
             const priceStr = sellPrice.value.replace(/\./g, "");
             const price = parseFloat(priceStr) || 0;
-            const percent = parseFloat(discountPercent.value) || 0;
+            const percentStr = discountPercent.value.replace(/[^0-9.]/g, "");
+            const percent = parseFloat(percentStr);
 
-            if (price > 0) {
+            if (price > 0 && !isNaN(percent) && percent > 0) {
                 const finalPrice = price - (price * percent) / 100;
-
                 discountAmount.value = new Intl.NumberFormat("vi-VN").format(
                     Math.round(finalPrice),
                 );

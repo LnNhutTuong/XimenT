@@ -344,11 +344,11 @@ const ProductDetail = {
         const calculateDiscount = () => {
             const priceStr = sellPrice.value.replace(/\./g, "");
             const price = parseFloat(priceStr) || 0;
-            const percent = parseFloat(discountPercent.value) || 0;
+            const percentStr = discountPercent.value.replace(/[^0-9.]/g, "");
+            const percent = parseFloat(percentStr);
 
-            if (price > 0) {
+            if (price > 0 && !isNaN(percent) && percent > 0) {
                 const finalPrice = price - (price * percent) / 100;
-
                 discountAmount.value = new Intl.NumberFormat("vi-VN").format(
                     Math.round(finalPrice),
                 );
@@ -360,11 +360,14 @@ const ProductDetail = {
         const calculatePercent = () => {
             const priceStr = sellPrice.value.replace(/\./g, "");
             const price = parseFloat(priceStr) || 0;
-            const percent = parseFloat(discountPercent.value) || 0;
+            const discountStr = discountAmount.value.replace(/\./g, "");
+            const discountPrice = parseFloat(discountStr) || 0;
 
-            if (price) {
-                percent = ((price - discountAmount.value) / price) * 100;
-                discountPercent.value = percent + " %";
+            if (price > 0 && discountPrice > 0 && discountPrice < price) {
+                const percent = ((price - discountPrice) / price) * 100;
+                discountPercent.value = Math.round(percent) + " %";
+            } else if (discountPrice === 0 || discountPrice >= price) {
+                discountPercent.value = "";
             }
         };
 

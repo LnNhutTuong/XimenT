@@ -8,7 +8,7 @@ use App\Models\Categories;
 use App\Models\Products;
 use App\Models\Sizes;
 use Illuminate\Support\Str;
-
+use App\Models\ProductVariants;
 
 
 class CategoryController extends Controller
@@ -67,6 +67,24 @@ class CategoryController extends Controller
             'sizes' => 'required|array',
             'sizes.*' => 'exists:sizes,id',
         ]);
+
+        // Kiểm tra xem có kích thước nào bị xóa mà đang có sản phẩm sử dụng không
+        $currentSizeIds = $category->sizes()->pluck('sizes.id')->toArray();
+        $newSizeIds = $request->sizes;
+        $removedSizeIds = array_diff($currentSizeIds, $newSizeIds);
+
+        if (!empty($removedSizeIds)) {
+            $isUsed = ProductVariants::whereIn('size_id', $removedSizeIds)
+                ->whereHas('product', function($query) use ($category) {
+                    $query->where('category_id', $category->id);
+                })->exists();
+
+            if ($isUsed) {
+                return redirect()->back()
+                ->with('error', 
+                'Một số kích thước đang được sử dụng bởi sản phẩm trong danh mục này nên không thể thay đổi!');
+            }
+        }
 
         $category->update([
             'name' => $request->name,       
