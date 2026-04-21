@@ -5,8 +5,8 @@
 <div class="product-container min-h-screen mx-auto container px-4 lg:px-0">
     {{-- Header --}}
     <header class="text-center py-12">
-        <h1 class="text-4xl md:text-5xl font-extralight tracking-[0.2em] uppercase">Brands</h1>
-        <p class="text-gray-400 mt-4 font-light italic">Tất cả những thương hiệu thời trang đẳng cấp hội tụ tại XimenT</p>
+        <h1 class="text-4xl md:text-5xl font-extralight tracking-[0.2em] uppercase">Danh sách thương hiệu</h1>
+        <p class="text-gray-400 mt-4 font-light italic">Các sản phẩm thuộc các thương hiệu có tầm ảnh hưởng.</p>
     </header>
 
     {{-- Brand Sections --}}
