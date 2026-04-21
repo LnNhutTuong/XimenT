@@ -1,7 +1,6 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-<!-- 1. Hero Carousel (Phong cách sang trọng) -->
 <div class="swiper heroSwiper w-full h-[60vh] md:h-[80vh]">
     <div class="swiper-wrapper">
         <div class="swiper-slide relative overflow-hidden">
@@ -14,12 +13,9 @@
                 </a>
             </div>
         </div>
-        <!-- Thêm các banner khác nếu cần -->
     </div>
-    <div class="swiper-pagination"></div>
 </div>
 
-<!-- 2. Section Sản phẩm mới (Sử dụng style Product Card của bạn) -->
 <div class="container mx-auto py-20 px-4">
     <div class="flex items-center justify-between mb-12 border-b border-gray-100 pb-6">
         <h2 class="text-3xl md:text-4xl font-light tracking-tight text-slate-900">Sản phẩm mới nhất</h2>
@@ -33,19 +29,30 @@
             <div class="swiper-wrapper">
             @foreach($list_products as $product)
                 <div class="swiper-slide list-product">
-                    <div class="bg-white flex flex-col rounded-md shadow-sm relative border hover:border-gray-300 transition-all duration-300 group">
-                        <a href="{{ route('product.detail', $product->slug) }}" class="rounded-t-md block overflow-hidden">
-                            <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('storage/empty/empty-image-product.png') }}"                               
-                                alt="{{ $product->name }}"
-                                class="w-full aspect-[4/5] object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                    <div class="bg-white flex flex-col rounded-md shadow-sm relative border hover:border-gray-300 transition-all duration-300 group h-full">
+                        <a href="{{ route('product.detail', $product->slug) }}" class="rounded-t-md flex flex-col h-full overflow-hidden">
+                            {{-- Khung chứa ảnh --}}
+                            <div class="relative w-full aspect-[4/5] overflow-hidden">
+                                {{-- Ảnh chính --}}
+                                <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('storage/empty/empty-image-product.png') }}"                               
+                                    alt="{{ $product->name }}"
+                                    class="absolute inset-0 w-full h-full object-cover object-top transition-all duration-500 {{ $product->images->count() > 0 ? 'group-hover:opacity-0' : '' }} group-hover:scale-105" />
+                                
+                                {{-- Ảnh khi hover (nếu có gallery) --}}
+                                @if($product->images->count() > 0)
+                                    <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                                        alt="{{ $product->name }}"
+                                        class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" />
+                                @endif
+                            </div>
                             
-                            <div class="p-4">
+                            <div class="p-4 flex-grow flex flex-col justify-between">
+                                {{-- Thông tin mặc định --}}
                                 <div class="group-hover:hidden transition-all duration-300">
                                     <h3 class="text-base font-bold text-slate-800 line-clamp-1">
                                         {{ $product->name }}
                                     </h3>
                                     <div class="flex items-center gap-2 mt-2">
-                                        @php $minVariant = $product->variants->sortBy('price')->first(); @endphp
                                         @if($product->variants->where('discount_price', '>', 0)->first())
                                             <p class="text-base font-bold text-red-600">
                                                 {{ number_format($product->variants->min('discount_price'), 0, ',', '.') }}đ
@@ -61,10 +68,11 @@
                                     </div>
                                 </div>
                                    
+                                {{-- Thông tin khi hover --}}
                                 <div class="hidden group-hover:block transition-all duration-300 mt-0">
                                     <h3 class="text-sm font-bold text-slate-800">Còn hàng:</h3>
                                     <div class="flex flex-wrap gap-1 mt-1">
-                                        @foreach ($product->variants as $variant)
+                                        @foreach ($product->variants->where('stock_quantity', '>', 0) as $variant)
                                             <span class="text-xs px-2 py-1 bg-gray-100 rounded text-slate-600">
                                                 {{ $variant->size->name }}
                                             </span>

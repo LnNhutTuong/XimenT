@@ -48,6 +48,7 @@ Route::delete('/cart/delete/{cartItem}', [CartController::class, 'destroy'])->na
 
 //checkout
 Route::post('/checkout', [CheckoutController::class, 'process'])->middleware('auth')->name('checkout.process');
+
 // ==========================================
 // 2. TRANG ADMIN (Cho quản trị)
 // ==========================================

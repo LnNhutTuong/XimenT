@@ -41,12 +41,17 @@ const DetailCategory = {
                 const btnCancel = modal.querySelector(".btn-cancel-edit");
                 const btnEdit = modal.querySelector(".btn-edit-category");
                 const btnDelete = modal.querySelector(".btn-delete-category");
+                const deleteSizeForms =
+                    modal.querySelectorAll(".form-delete-size");
 
                 // enable input
                 nameCategory.disabled = false;
 
                 // show edit UI
                 addNewSize.classList.remove("hidden");
+                deleteSizeForms.forEach((form) =>
+                    form.classList.remove("hidden"),
+                );
 
                 chooseSize.forEach((cb) => {
                     cb.disabled = false;
@@ -77,12 +82,14 @@ const DetailCategory = {
         const btnEdit = modal.querySelector(".btn-edit-category");
         const btnDelete = modal.querySelector(".btn-delete-category");
         const chooseSize = modal.querySelectorAll(".choose-size");
+        const deleteSizeForms = modal.querySelectorAll(".form-delete-size");
 
         //khoas liasj
         nameCategory.disabled = true;
 
         // an
         addNewSize.classList.add("hidden");
+        deleteSizeForms.forEach((form) => form.classList.add("hidden"));
 
         chooseSize.forEach((cb) => {
             cb.checked = cb.defaultChecked;

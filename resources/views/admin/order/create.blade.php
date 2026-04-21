@@ -57,10 +57,21 @@
                         <label for="customer_note" class="block text-sm font-semibold text-gray-700">Ghi chú </label>
                         <textarea name="note" id="customer_note" 
                             placeholder="Ví dụ: Ghi chú..."
-                            class="w-full h-[80px] px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"></textarea>
+                            class="w-full h-[35px] px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"></textarea>
                     </div> 
+                    <div class="mt-2">
+                        <label for="payment_method" class="block text-sm font-semibold text-gray-700">Phương thức thanh toán<span class="text-red-500">*</span></label>
+                        <select name="payment_method" id="payment_method" class="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm">
+                            <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                            <option value="vnpay">Thanh toán qua VNPay</option>
+                        </select>
+                    </div>
                 </div>
                 </div>
+                
+                {{-- Hidden inputs for totals --}}
+                <input type="hidden" name="total_amount" id="total-price-input" value="0">
+                <input type="hidden" name="total_quantity" id="total-quantity-input" value="0">
                
 
             </div>

@@ -42,16 +42,18 @@
                             @endphp
                             <div class="grid grid-cols-3 gap-3 size-checkbox-grid">
                                 @foreach($sizes as $size)
-                                    <label class="group relative flex items-center justify-center p-3 rounded-xl border border-white bg-white hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
-                                        <input disabled type="checkbox" name="sizes[]" value="{{ $size->id }}" class="choose-size hidden peer" {{ in_array($size->id, $categorySizeIds) ? 'checked' : '' }} >
-                                        <span class="text-sm font-bold text-gray-600 peer-checked:text-blue-600 transition-colors">{{ $size->name }}</span>
-                                        <div class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-xl pointer-events-none transition-all"></div>
-                                        <div class="absolute top-1 right-1 opacity-0 peer-checked:opacity-100 transition-opacity">
-                                            <svg class="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </div>
-                                    </label>
+                                    <div class="relative group">
+                                        <label class="relative flex items-center justify-center p-3 rounded-xl border border-white bg-white hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+                                            <input disabled type="checkbox" name="sizes[]" value="{{ $size->id }}" class="choose-size hidden peer" {{ in_array($size->id, $categorySizeIds) ? 'checked' : '' }} >
+                                            <span class="text-sm font-bold text-gray-600 peer-checked:text-blue-600 transition-colors">{{ $size->name }}</span>
+                                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-xl pointer-events-none transition-all"></div>
+                                            <div class="absolute top-1 right-1 opacity-0 peer-checked:opacity-100 transition-opacity">
+                                                <svg class="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                            </div>
+                                        </label>
+                                    </div>
                                 @endforeach
                             </div>
                         </div>

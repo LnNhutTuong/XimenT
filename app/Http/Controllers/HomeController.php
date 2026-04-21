@@ -17,14 +17,14 @@ class HomeController extends Controller
 {
     public function index(){
         $brands = Brands::all();
-        $list_products = Products::with('variants')->latest()->take(6)->get();
+        $list_products = Products::with('variants')->where('is_active', 1)->latest()->take(6)->get();
         return view('frontend.home.index', compact('brands', 'list_products')); 
     }
 
     public function products(){
         $categories = Categories::all();
         $brands = Brands::all();
-        $products = Products::with("variants.size")->get();
+        $products = Products::with("variants.size")->with('images')->where('is_active', 1)->get();
         $productVariants = ProductVariants::all();
         return view('frontend.products.index', compact('categories', 'brands', 'products', 'productVariants'));
     }

@@ -2,6 +2,7 @@ const OrderCreate = {
     init() {
         this.handleChooseTypeCustomers();
         this.handleAddOrderDetail();
+        this.handleFormValidate();
     },
 
     handleFormValidate() {

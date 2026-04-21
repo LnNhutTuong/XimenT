@@ -22,7 +22,7 @@ class CustomerController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
         return view('admin.customer.index', compact('customers'));

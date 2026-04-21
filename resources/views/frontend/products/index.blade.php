@@ -53,45 +53,65 @@
         <div class="w-full">
             <ul class="grid grid-cols-2 gap-4 md:gap-8 sm:grid-cols-3 lg:grid-cols-4">
                 @foreach ($products as $product)
-                <li class="bg-white flex flex-col rounded-md shadow-sm relative border hover:border-gray-300 transition-all duration-300">
-                    <a href="{{ route('product.detail', $product->slug) }}" class="rounded-t-md block overflow-hidden group">
-                    <img src="{{ $product->image 
-                        ? asset('storage/' . $product->image) 
-                        : asset('storage/empty/empty-image-product.png') }}"                               
-                        alt="{{ $product->name }}"
-                        class="w-full aspect-[4/5] object-cover object-top group-hover:scale-105 transition-transform duration-500" />
-                        <div class="p-3 md:p-4">
-
-                        <div class="group-hover:hidden transition-all">
-                            <h3 class="text-xl md:text-base font-bold text-slate-800 line-clamp-1">
-                                {{ $product->name }}
-                            </h3>
-
-                            <div class="flex items-center gap-2 mt-2">
-                                @if($product->variants->where('discount_price', '>', 0)->first())
-                                    <p class="text-sm md:text-base font-bold text-red-600">
-                                        {{ number_format($product->variants->min('discount_price'), 0, ',', '.') }}đ
-                                    </p>
-                                    <p class="text-xs text-gray-400 line-through">
-                                        {{ number_format($product->variants->min('price'), 0, ',', '.') }}đ
-                                    </p>
-                                @else
-                                    <p class="text-sm md:text-base font-bold text-slate-700">
-                                        {{ number_format($product->variants->min('price'), 0, ',', '.') }}đ
-                                    </p>
-                                @endif
-                            </div>
+                <li class="bg-white flex flex-col rounded-md shadow-sm relative border hover:border-gray-300 transition-all duration-300 h-full">
+                    <a href="{{ route('product.detail', $product->slug) }}" class="rounded-t-md flex flex-col h-full group overflow-hidden">
+                        
+                        <div class="relative w-full aspect-[4/5] overflow-hidden">
+                            <img src="{{ $product->image ? asset('storage/' . $product->image) : asset('storage/empty/empty-image-product.png') }}"                               
+                                alt="{{ $product->name }}"
+                                class="absolute inset-0 w-full h-full object-cover object-top transition-all duration-500 {{ $product->images->count() > 0 ? 'group-hover:opacity-0' : '' }} group-hover:scale-105" />
+                            
+                            @if($product->images->count() > 0)
+                                <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                                    alt="{{ $product->name }}"
+                                    class="absolute inset-0 w-full h-full object-cover object-top opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-110" />
+                            @endif
                         </div>
-                           
-                            <div class="hidden group-hover:inline transition-all mt-2">
-                                <h3 class="text-sm md:text-base font-bold text-slate-800 line-clamp-1">
-                                    Còn hàng:
+
+                        <div class="p-3 md:p-4 flex-grow flex flex-col justify-between">
+                            <div class="group-hover:hidden transition-all duration-300">
+                                <h3 class="text-xl md:text-base font-bold text-slate-800 line-clamp-1">
+                                    {{ $product->name }}
                                 </h3>
-                               @foreach ($product->variants as $variant)
-                                    <span class="text-xl mt-2">
-                                        {{ $variant->size->name }}{{ !$loop->last ? ',' : '' }}
-                                    </span>
-                                @endforeach
+
+                                <div class="flex items-center gap-2 mt-2">
+                                    @if($product->variants->where('stock_quantity', '>', 0)->count() > 0)
+                                        @if($product->variants->where('discount_price', '>', 0)->first())
+                                            <p class="text-sm md:text-base font-bold text-red-600">
+                                                {{ number_format($product->variants->min('discount_price'), 0, ',', '.') }}đ
+                                            </p>
+                                            <p class="text-xs text-gray-400 line-through">
+                                                {{ number_format($product->variants->min('price'), 0, ',', '.') }}đ
+                                            </p>
+                                        @else
+                                            <p class="text-sm md:text-base font-bold text-slate-700">
+                                                {{ number_format($product->variants->min('price'), 0, ',', '.') }}đ
+                                            </p>
+                                        @endif
+                                    @else
+                                        <p class="text-sm md:text-base font-bold text-red-600">Hết hàng</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Thông tin khi hover --}}
+                            <div class="hidden group-hover:block transition-all duration-300">
+                                @if($product->variants->where('stock_quantity', '>', 0)->count() > 0)
+                                    <h3 class="text-sm md:text-base font-bold text-slate-800 line-clamp-1">
+                                        Còn hàng:
+                                    </h3>
+                                    <div class="flex flex-wrap gap-1 mt-2">
+                                        @foreach ($product->variants->where('stock_quantity', '>', 0) as $variant)
+                                            <span class="text-xs px-2 py-1 bg-gray-100 rounded text-slate-600">
+                                                {{ $variant->size->name }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <h3 class="text-sm md:text-base font-bold text-red-600">
+                                        Đã hết hàng
+                                    </h3>
+                                @endif
                             </div>
                         </div>
                     </a>    

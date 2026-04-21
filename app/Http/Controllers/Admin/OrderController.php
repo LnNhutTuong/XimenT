@@ -30,9 +30,11 @@ class OrderController extends Controller
                     ->withQueryString();
                     
         $orderItems = OrderDetails::with('order', 'variant')->get();
-        $customers = Customer::whereNotNull('user_id')
+        $customers = Customer::with('user')
+                    ->whereNotNull('user_id')
                     ->whereHas('user', function ($query) {
-                        $query->where('status', 1);
+                        $query->where('role', 'user')
+                            ->where('status', 1);
                     })
                     ->get();
                     
@@ -49,6 +51,7 @@ class OrderController extends Controller
             'phone' => 'required|numeric|digits:10',
             'address' => 'required|string',
             'note' => 'nullable|string',
+            'payment_method' => 'required|in:cod,vnpay',
 
             'items' => 'required|array',
             'items.*.variant_id' => 'required|exists:product_variants,id',
@@ -74,7 +77,10 @@ class OrderController extends Controller
                 );
                 $customerId = $customer->id;
             }
+            $orderCode = 'XMT' . now()->format('ymd') . strtoupper(\Illuminate\Support\Str::random(5));
+
             $order = Orders::create([
+                'order_code' => $orderCode,
                 'customer_id' => $customerId,
                 'user_id' => $userId,
                 'total_amount' => 0,
@@ -82,6 +88,7 @@ class OrderController extends Controller
                 'phone' => $request->input('phone'),
                 'address' => $request->input('address'),
                 'note' => $request->input('note'),
+                'payment_method' => $request->input('payment_method'),
                 'order_date' => now()->timezone('Asia/Ho_Chi_Minh'),
             ]);
             
