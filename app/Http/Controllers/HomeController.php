@@ -31,7 +31,7 @@ class HomeController extends Controller
 
     public function filter_product(Request $request)
     {
-        $query = Products::with("variants.size");
+        $query = Products::with("variants.size")->where('is_active', 1);
 
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
@@ -68,7 +68,17 @@ class HomeController extends Controller
     }
 
     public function brands(){
-        $brands = Brands::with(['products.variants.size'])->where('is_active', 1)->get();
+      $brands = Brands::with([
+        'products' => function ($query) {
+            $query->where('is_active', 1);
+        },
+        'products.variants.size'
+        ])
+        ->whereHas('products', function ($query) {
+            $query->where('is_active', 1);
+        })
+        ->get();
+        
         $categories = Categories::all();
         return view('frontend.brands.index', compact('brands', 'categories'));
     }

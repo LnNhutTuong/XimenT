@@ -7,8 +7,8 @@
     </header>
 
     <form action="{{ route('product.filter_product') }}" method="GET" id="filter-form">
-        <div class="mt-3 filter flex justify-between gap-4">
-            <div>
+        <div class="mt-3 filter flex flex-col md:flex-row justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-2">
                 <span class="text-xl">Lọc theo: </span>
                 <select name="category" id="category" onchange="this.form.submit()" class="border border-gray-700 rounded-md text-lg">
                     <option value="">Danh mục</option>
@@ -19,7 +19,7 @@
                     @endforeach
                 </select>
 
-                <select name="brand" id="brand" onchange="this.form.submit()" class="border border-gray-700 rounded-md text-lg ml-2">
+                <select name="brand" id="brand" onchange="this.form.submit()" class="border border-gray-700 rounded-md text-lg">
                     <option value="">Thương hiệu</option>
                     @foreach ($brands as $brand)
                         <option value="{{ $brand->id }}" {{ request('brand') == $brand->id ? 'selected' : '' }}>
@@ -28,7 +28,7 @@
                     @endforeach
                 </select>   
 
-                <span class="text-xl ml-4 border-l border-black pl-4">Sắp xếp theo: </span>
+                <span class="text-xl md:ml-4 border-none md:border-l border-black md:pl-4 pl-0">Sắp xếp theo: </span>
                 <select name="sort" id="sort" onchange="this.form.submit()" class="border border-gray-700 rounded-md text-lg">
                     <option value="">Mặc định</option>
                     <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
@@ -37,7 +37,7 @@
                 </select>
             </div>
         
-            <div class="serach-bar w-1/4 flex border-b border-gray-600">
+            <div class="serach-bar w-full md:w-1/4 flex border-b border-gray-600 mt-4 md:mt-0 pb-1">
                 <button type="submit" class="border-none">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -101,11 +101,7 @@
                                         Còn hàng:
                                     </h3>
                                     <div class="flex flex-wrap gap-1 mt-2">
-                                        @foreach ($product->variants->where('stock_quantity', '>', 0) as $variant)
-                                            <span class="text-xs px-2 py-1 bg-gray-100 rounded text-slate-600">
-                                                {{ $variant->size->name }}
-                                            </span>
-                                        @endforeach
+                                        <span class="text-md text-slate-700"> {{ $product->variants->pluck('size.name')->implode(', ') }} </span>
                                     </div>
                                 @else
                                     <h3 class="text-sm md:text-base font-bold text-red-600">

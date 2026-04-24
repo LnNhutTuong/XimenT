@@ -1,4 +1,4 @@
-<nav class="bg-[#09090a]  shadow-2xl border-r border-gray-800 h-screen fixed top-0 left-0 min-w-[260px] py-6 px-4 overflow-y-auto overflow-x-hidden custom-scrollbar">
+<nav :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="bg-[#09090a] shadow-2xl border-r border-gray-800 h-screen fixed top-0 left-0 min-w-[260px] py-6 px-4 overflow-y-auto overflow-x-hidden custom-scrollbar transition-transform duration-300 z-50 md:translate-x-0">
     {{-- Header Profile --}}
     <div class="flex items-center px-4 mb-8">
         <div class="relative">

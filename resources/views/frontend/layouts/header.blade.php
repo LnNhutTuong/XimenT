@@ -1,5 +1,16 @@
-    <nav class="container mx-auto px-4 h-16 grid grid-cols-3 items-center text-black">
-        <ul>
+    <nav x-data="{ mobileMenuOpen: false }" class="container mx-auto px-4 h-16 flex justify-between items-center text-black relative">
+        <!-- Hamburger Menu Button (Mobile) -->
+        <div class="md:hidden flex items-center">
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-black focus:outline-none">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path x-show="mobileMenuOpen" style="display: none;" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Desktop Links -->
+        <ul class="hidden md:flex space-x-4">
             <x-nav-link :href="route('home')" class="btn-base btn-black">
                 <span class="btn-text">Trang chủ</span>
                 <span class="btn-underline"></span>
@@ -16,12 +27,12 @@
             </x-nav-link>
         </ul>
 
-        <div class="title">
-            <a href="{{ route('home') }}">XimenT</a>  
+        <!-- Title / Logo -->
+        <div class="title md:absolute md:left-1/2 md:-translate-x-1/2 cursor-pointer flex justify-center ">
+            <a href="{{ route('home') }}" class="font-bold text-2xl md:text-3xl lg:text-4xl transition-all">XimenT</a>  
         </div>
 
-        <div class="flex justify-end">
-            <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-3">
 
                 @guest
                     {{-- Chưa đăng nhập: hiện nút Đăng nhập và Đăng ký --}}
@@ -108,5 +119,20 @@
                     </div>
                 @endguest
             </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" style="display: none;" class="absolute top-16 left-0 w-full bg-white shadow-md md:hidden z-50 border-t">
+            <ul class="flex flex-col px-4 py-2">
+                <li>
+                    <a href="{{ route('home') }}" class="block py-3 text-black border-b hover:opacity-70">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="{{ route('product') }}" class="block py-3 text-black border-b hover:opacity-70">Sản phẩm</a>
+                </li>
+                <li>
+                    <a href="{{ route('brand') }}" class="block py-3 text-black hover:opacity-70">Thương hiệu</a>
+                </li>
+            </ul>
         </div>
     </nav>

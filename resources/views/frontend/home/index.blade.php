@@ -5,18 +5,18 @@
     <div class="swiper-wrapper">
         <div class="swiper-slide relative overflow-hidden">
             <img src="{{ asset('storage/home/index/YohjiYamamoto.jpg') }}" class="w-full h-full object-cover transition-transform duration-[10s] hover:scale-110">
-            <div class="absolute inset-0 bg-black/20 flex flex-col items-center justify-center text-white p-4">
+            <div class="absolute inset-0 bg-black/20 flex flex-col items-center justify-center text-white p-4 text-center">
                 <h2 class="text-4xl md:text-4xl font-extralight tracking-widest mb-4 animate-fadeIn">“Black is modest and arrogant at the same time.”</h2>
                 <p class="text-lg md:text-xl font-light tracking-[0.3em]  opacity-80 mb-8 font-serif">- Yohji Yamamoto -</p>
                 <a href="{{ route('product') }}" class="border border-white px-10 py-3 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-500">
-                    Khám phá ngay
+                    More... 
                 </a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container mx-auto py-20 px-4">
+<div class="container mx-auto py-20 px-4 mt-8">
     <div class="flex items-center justify-between mb-12 border-b border-gray-100 pb-6">
         <h2 class="text-3xl md:text-4xl font-light tracking-tight text-slate-900">Sản phẩm mới nhất</h2>
         <a href="{{ route('product') }}" class="text-sm uppercase tracking-widest border-b border-black pb-1 hover:opacity-60 transition-all">

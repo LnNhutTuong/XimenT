@@ -60,11 +60,7 @@
                                                 <div class="hidden group-hover/card:block transition-all duration-300 mt-0">
                                                     <h3 class="text-sm font-bold text-slate-800">Còn hàng:</h3>
                                                     <div class="flex flex-wrap gap-1 mt-1">
-                                                        @foreach ($product->variants as $variant)
-                                                            <span class="text-[10px] px-1.5 py-0.5 bg-gray-100 rounded text-slate-600 border border-gray-200">
-                                                                {{ $variant->size->name ?? '' }}
-                                                            </span>
-                                                        @endforeach
+                                                        {{ $product->variants->pluck('size.name')->implode(', ') }}
                                                     </div>
                                                 </div>
                                             </div>

@@ -18,8 +18,21 @@
         <p class="text-4xl font-bold mt-2">{{ $brandCount }}</p>
     </div>
 </div>
-<div>
-    <canvas id="myChart"></canvas>
+<div id="chart-data" 
+    data-revenue="{{ json_encode($monthlyRevenue) }}" 
+    data-sales="{{ json_encode($monthlySales) }}"
+    data-year="{{ $currentYear }}"
+    class="hidden"></div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+    <div class="bg-white rounded-2xl p-6 shadow-sm border">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Doanh thu năm {{ $currentYear }} (VNĐ)</h3>
+        <canvas id="revenueChart" height="150"></canvas>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm border">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Số lượng sản phẩm bán ra năm {{ $currentYear }}</h3>
+        <canvas id="salesChart" height="150"></canvas>
+    </div>
 </div>
 <div class="mt-12 bg-white rounded-2xl shadow-sm border p-8">
     <h3 class="text-xl font-bold text-gray-800">Thông tin phân quyền</h3>
@@ -29,6 +42,6 @@
     </div>
 </div>
 @endsection
-@section('scripts')
+@push('scripts')
     @vite('resources/js/admin/dashboard/dashboard.js')
-@endsection
+@endpush

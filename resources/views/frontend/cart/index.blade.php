@@ -29,7 +29,8 @@
 
                 {{-- Danh sách sản phẩm --}}
                 <div class="lg:col-span-8">
-                    <table class="w-full">
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full min-w-[600px]">
                         <thead>
                             <tr class="border-b border-gray-300 text-base text-slate-800">
                                 <th class="text-left pb-3 font-bold">Sản phẩm</th>
@@ -96,7 +97,8 @@
                             </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
 
                     <div class="mt-6">
                         <a href="{{ route('product') }}" class="text-base text-slate-800 hover:underline flex items-center gap-2">

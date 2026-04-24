@@ -90,14 +90,14 @@
             @endif
         </form>
         </div>
-            <div class="relative bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+            <div class="relative bg-neutral-primary-soft shadow-xs rounded-base border border-default overflow-x-auto w-full">
                 <table class="w-full text-left rtl:text-right text-body">
                     <thead>
                         <tr class="bg-gray-50/50  text-lg font-bold border-b border-gray-50">
                             <th class="px-8 py-4 text-center">Mã đơn hàng</th>
                             <th class="px-8 py-4">Khách hàng</th>
                             <th class="px-8 py-4">Tổng tiền</th>
-                            <th class="px-8 py-4">Thanh toán</th>
+                            <th class="px-8 py-4">Phương thức thanh toán</th>
                             <th class="px-8 py-4">Trạng thái</th>
                             <th class="px-8 py-4">Ngày đặt</th>
                             <th class="px-8 py-4 text-right">Hành động</th>
@@ -121,8 +121,8 @@
                                 </p>
                             </td>
 
-                            <td class="px-8 py-5 font-bold uppercase text-gray-700">
-                                {{ $order->payment_method ?? 'COD' }}
+                            <td class="px-8 py-5 font-bold uppercase text-gray-700 text-center">
+                                {{ $order->payment_method }}
                             </td>
 
                             <td class="px-8 py-5">

@@ -17,12 +17,12 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-100 h-screen overflow-hidden">
+<body class="bg-gray-100 h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
     {{-- Sidebar --}}
     @include('admin.layouts.sidebar')
 
     {{-- Main content area --}}
-    <main class="ml-[260px] h-screen flex flex-col">
+    <main class="ml-0 md:ml-[260px] h-screen flex flex-col transition-all duration-300">
         {{-- Header --}}
         @include('admin.layouts.header')
 

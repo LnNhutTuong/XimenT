@@ -18,9 +18,6 @@
   
     </x-slot>
     <x-slot name="body">
-        <form action="" method="post">
-            @csrf
-            @method('PUT')
                <!-- name -->
                 <div class="flex gap-4">
                     <div class="flex-1">
@@ -52,8 +49,12 @@
                         </div>
                     </div>
                 </div>
-              
-        </form>
+
+                
+                <div class="mt-4 flex justify-center gap-4 mx-10">
+                    <div class="flex-1 text-md font-semibold text-gray-700 p-4 bg-green-600 !text-white rounded-lg">Đơn thành công: {{ $customer->orders()->where('status', 1)->count() }}</div>
+                    <div class="flex-1 text-md font-semibold text-gray-700 p-4 bg-red-600 !text-white rounded-lg">Đơn thất bại: {{ $customer->orders()->where('status', 0)->count() }}</div>
+                </div>
     </x-slot>
     <x-slot name="footer">
         <button @click="show = false" class="btn-close-detail cursor-pointer block px-4 py-2 rounded-lg text-white text-md font-medium bg-[#09090b] hover:bg-gray-800 transition-all">Đóng</button>

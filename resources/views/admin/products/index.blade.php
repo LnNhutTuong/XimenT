@@ -84,7 +84,7 @@
             @endif
         </form>
         </div>
-            <div class="relative bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+            <div class="relative bg-neutral-primary-soft shadow-xs rounded-base border border-default overflow-x-auto w-full">
                 <table class="w-full text-left rtl:text-right text-body">
                     <thead>
                         <tr class="bg-gray-50/50  text-lg font-bold border-b border-gray-50">
